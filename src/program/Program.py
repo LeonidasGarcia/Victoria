@@ -22,7 +22,7 @@ class Program:
             return (
                 self.pid,
                 random.randint(0, PAGE_QUANTITY - 1),
-                ["w", "r"][random.randint[0, 1]],
+                random.choice(["w", "r"]),
             )
 
         if vpn >= PAGE_QUANTITY:

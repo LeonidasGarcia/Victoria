@@ -19,7 +19,6 @@ class RamManager:
         )
 
         self.frame_usage.index.name = "FPN"
-
         self.num_frames = FRAME_QUANTITY
 
     def update_frame(
@@ -56,3 +55,6 @@ class RamManager:
 
     def reset_r(self):
         self.frame_usage.loc[(self.frame_usage["R"] == 1), "R"] = 0
+
+    def get_busy_frames_count(self):
+        return len(self.frame_usage.loc[(self.frame_usage["pid"] != -1)])

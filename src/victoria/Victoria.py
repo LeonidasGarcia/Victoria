@@ -12,10 +12,11 @@ from static.Static import (
     SWAP_OUT_COST,
     RESET_R_INTERVAL,
 )
+from metrics.Metrics import Metrics
 
 
 class Victoria:
-    def __init__(self, PRA: PRA = LRU()):
+    def __init__(self, PRA: PRA = LRU(), metrics: Metrics = Metrics()):
         self.ram_manager = RamManager()
         self.programs: dict[int, Program] = dict()
         self.program_count: int = 0
@@ -25,19 +26,19 @@ class Victoria:
         self.requests: list[tuple[int, int]] = list()
         self.PRA = PRA
         self.next_reset_time = RESET_R_INTERVAL
+        self.memory_access_count: int = 0
+        self.metrics: Metrics = metrics
 
-    def generate_requests(self, quantity=5):
+    def generate_random_requests(self, quantity=5):
         if self.program_count == 0:
             print("No programs loaded!")
             return
 
-        programs_pids = list(self.programs.keys())
-
         for i in range(quantity):
-            program = self.programs[
-                programs_pids[random.randint(0, len(programs_pids) - 1)]
-            ]
-            self.requests.append(program.generate_memory_request())
+            random_pid = random.choice(list(self.programs.keys()))
+            program = self.programs[random_pid]
+            mode = random.choice(["w", "r"])
+            self.requests.append(program.generate_memory_request(mode=mode))
 
     # basic control
     def load_program(self, pid: int, name, data):
@@ -128,6 +129,7 @@ class Victoria:
 
     # core
     def access_memory(self, program: Program, vpn: int, mode: str):
+        self.memory_access_count += 1
         pid = program.pid
         data = program.data
         pag_tab = program.page_table
@@ -144,7 +146,7 @@ class Victoria:
         fpn = self.handle_page_fault()
 
         if self.check_in_disk(pid, vpn):
-            self.disk_swap_in(pid, vpn, pag_tab, fpn)
+            self.disk_swap_in(pid, vpn, pag_tab, fpn, mode=mode)
             return
 
         pag_tab.link_page(vpn=vpn, fpn=fpn)
@@ -175,3 +177,18 @@ class Victoria:
         if self.clock >= self.next_reset_time:
             self.ram_manager.reset_r()
             self.next_reset_time = self.clock + RESET_R_INTERVAL
+
+    def init(self):
+        for pid, vpn, mode in self.requests:
+            program = self.find_program(pid)
+            self.masive_r_reset()
+            self.access_memory(program, vpn, mode)
+            self.metrics.add_ram_log(
+                frame_usage=self.ram_manager.frame_usage,
+                ram=self.ram_manager.ram,
+                total_faults=self.page_failure_count,
+                clock=self.clock,
+                total_accesses=self.memory_access_count,
+                busy_frames=self.ram_manager.get_busy_frames_count(),
+            )
+        self.metrics.print_step_by_step()
