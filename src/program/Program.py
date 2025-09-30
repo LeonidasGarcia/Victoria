@@ -15,14 +15,20 @@ class Program:
         self.page_table = PagTable()
         self.virtual_size = PROGRAM_SIZE
 
-    def generate_memory_request(self, virtual_address: int = -1) -> tuple[int, int]:
-        if virtual_address < 0:
-            return (self.pid, random.randint(0, PAGE_QUANTITY - 1))
+    def generate_memory_request(
+        self, vpn: int = -1, mode: str = "r"
+    ) -> tuple[int, int, str]:
+        if vpn < 0:
+            return (
+                self.pid,
+                random.randint(0, PAGE_QUANTITY - 1),
+                ["w", "r"][random.randint[0, 1]],
+            )
 
-        if virtual_address >= PAGE_QUANTITY:
+        if vpn >= PAGE_QUANTITY:
             raise RuntimeError("Illegal access to virtual memory")
 
-        return (self.pid, virtual_address)
+        return (self.pid, vpn, mode)
 
     def __str__(self):
         return f"Process {self.pid} (data = {self.data})"

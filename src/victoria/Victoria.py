@@ -5,6 +5,13 @@ from pag_table.PagTable import PagTable
 from page_replacement.PRA import PRA
 from page_replacement.LRU import LRU
 import random
+from static.Static import (
+    ACCESS_RAM_COST,
+    PAGE_FAULT_COST,
+    SWAP_IN_COST,
+    SWAP_OUT_COST,
+    RESET_R_INTERVAL,
+)
 
 
 class Victoria:
@@ -17,6 +24,7 @@ class Victoria:
         self.page_failure_count: int = 0
         self.requests: list[tuple[int, int]] = list()
         self.PRA = PRA
+        self.next_reset_time = RESET_R_INTERVAL
 
     def generate_requests(self, quantity=5):
         if self.program_count == 0:
@@ -56,8 +64,9 @@ class Victoria:
         program = self.find_program(pid)
         program.page_table.unlink_page(vpn)
         self.disk[(pid, vpn)] = data
+        self.clock += SWAP_OUT_COST
 
-    def disk_swap_in(self, pid, vpn, pag_tab: PagTable, fpn):
+    def disk_swap_in(self, pid, vpn, pag_tab: PagTable, fpn, mode: str):
         if (pid, vpn) not in self.disk:
             raise RuntimeError("Error, that reg is not in disk")
 
@@ -65,25 +74,29 @@ class Victoria:
 
         pag_tab.link_page(vpn=vpn, fpn=fpn)
         self.ram_manager.update_frame(
-            fpn=fpn, pid=pid, vpn=vpn, data=data, referenced_time=self.clock
+            fpn=fpn, pid=pid, vpn=vpn, data=data, referenced_time=self.clock, mode=mode
         )
         del self.disk[(pid, vpn)]
-        self.clock += 1000
+        self.clock += SWAP_IN_COST
 
     def check_in_disk(self, pid, vpn):
         return (pid, vpn) in self.disk
 
     def handle_page_hit(
-        self, pag_tab: DataFrame, pid: int, vpn: int, frame_usage: DataFrame
+        self, pag_tab: DataFrame, pid: int, vpn: int, mode: str, frame_usage: DataFrame
     ):
-        pag_tab.update_page(vpn)
         frame = pag_tab.table.loc[vpn, "frame"]
         fpn = frame_usage.loc[frame]
         fpn = frame_usage.loc[
             (frame_usage["pid"] == pid) & (frame_usage["vpn"] == vpn)
         ].index.tolist()
+        if mode == "w":
+            pag_tab.update_page(vpn)
+            frame_usage.loc[fpn[0], "M"] = 1
         frame_usage.loc[fpn[0], "referenced_time"] = self.clock
-        self.clock += 1000
+        frame_usage.loc[fpn[0], "R"] = 1
+
+        self.clock += ACCESS_RAM_COST
 
     def handle_page_fault(self) -> int:
         fpn = self.choose_free_frame()
@@ -114,7 +127,7 @@ class Victoria:
         return fpn
 
     # core
-    def access_memory(self, program: Program, vpn: int):
+    def access_memory(self, program: Program, vpn: int, mode: str):
         pid = program.pid
         data = program.data
         pag_tab = program.page_table
@@ -124,7 +137,7 @@ class Victoria:
         # update referenced
         if pag_tab.check_valid(vpn):
             self.handle_page_hit(
-                pag_tab=pag_tab, pid=pid, vpn=vpn, frame_usage=frame_usage
+                pag_tab=pag_tab, pid=pid, vpn=vpn, mode=mode, frame_usage=frame_usage
             )
             return
 
@@ -143,9 +156,10 @@ class Victoria:
             data=data,
             load_time=self.clock,
             referenced_time=self.clock,
+            mode=mode,
         )
 
-        self.clock += 1000
+        self.clock += PAGE_FAULT_COST
 
     def choose_free_frame(self) -> int:
         frame_usage = self.ram_manager.frame_usage
@@ -156,3 +170,8 @@ class Victoria:
             return free_indexes[0]
         else:
             return -1
+
+    def masive_r_reset(self):
+        if self.clock >= self.next_reset_time:
+            self.ram_manager.reset_r()
+            self.next_reset_time = self.clock + RESET_R_INTERVAL

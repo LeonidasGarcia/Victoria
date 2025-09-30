@@ -1,9 +1,11 @@
 from victoria.Victoria import Victoria
+from page_replacement.NRU import NRU
+from page_replacement.LRU import LRU
 
-# TODO probar aspectos de la memoria virtual para validar funcionamiento correcto
-# ejecutar pruebas controladas
+# TODO realizar pruebas sobre NRU
+# TODO implementar algoritmo second chance
 
-victoria = Victoria()
+victoria = Victoria(PRA=LRU())
 
 program_data = [
     "a",
@@ -38,24 +40,25 @@ program_4 = victoria.find_program(4)
 program_5 = victoria.find_program(5)
 
 victoria.requests = [
-    (program_5.pid, 5),
-    (program_4.pid, 4),
-    (program_3.pid, 3),
-    (program_2.pid, 2),
-    (program_5.pid, 5),
-    (program_4.pid, 4),
-    (program_1.pid, 1),
-    (program_2.pid, 2),
+    (program_5.pid, 5, "r"),
+    (program_4.pid, 4, "w"),
+    (program_3.pid, 3, "r"),
+    (program_2.pid, 2, "r"),
+    (program_5.pid, 5, "w"),
+    (program_4.pid, 4, "r"),
+    (program_1.pid, 1, "r"),
+    (program_2.pid, 2, "w"),
 ]
 
 frame_usage = victoria.ram_manager.frame_usage
 
-for pid, vpn in victoria.requests:
+for pid, vpn, mode in victoria.requests:
     print(f"pid={pid} vpn={vpn}")
     print(frame_usage)
     print("")
     program = victoria.find_program(pid)
-    victoria.access_memory(program, vpn)
+    victoria.masive_r_reset()
+    victoria.access_memory(program, vpn, mode)
 
 
 print(frame_usage)
