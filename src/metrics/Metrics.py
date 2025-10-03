@@ -12,9 +12,11 @@ class Metrics:
         page_fault_rate: bool = True,
         average_time_access: bool = True,
         memory_usage: bool = True,
+        logic_time: bool = True,
     ):
         self.active = active
         self.metrics_to_show: dict[str, bool] = {
+            "logic_time": logic_time,
             "page_fault_count": page_fault_count,
             "page_fault_rate": page_fault_rate,
             "average_time_access": average_time_access,
@@ -35,6 +37,7 @@ class Metrics:
             {
                 "frame": frame_usage.to_string(),
                 "ram": str(ram),
+                "logic_time": "Logic time: " + str(clock),
                 "page_fault_count": "Page failure count: " + str(total_faults),
                 "page_fault_rate": "Page failure rate: "
                 + str(round((total_faults / total_accesses) * 100, 2))

@@ -1,11 +1,14 @@
 from victoria.Victoria import Victoria
 from page_replacement.NRU import NRU
 from page_replacement.LRU import LRU
+from page_replacement.FIFO import FIFO
+from page_replacement.CLK import CLK
 
 # TODO implementar algoritmo second chance
 # TODO implementar el memory_usage de manera correcta (terminacion de programas)
+# TODO implementar optimal (ver el futuro uuuu)
 
-victoria = Victoria(PRA=NRU())
+victoria = Victoria(PRA=CLK())
 
 program_data = [
     "a",

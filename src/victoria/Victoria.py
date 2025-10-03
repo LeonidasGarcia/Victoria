@@ -4,6 +4,7 @@ from pandas import DataFrame
 from pag_table.PagTable import PagTable
 from page_replacement.PRA import PRA
 from page_replacement.LRU import LRU
+from page_replacement.CLK import CLK
 import random
 from static.Static import (
     ACCESS_RAM_COST,
@@ -177,6 +178,8 @@ class Victoria:
         if self.clock >= self.next_reset_time:
             self.ram_manager.reset_r()
             self.next_reset_time = self.clock + RESET_R_INTERVAL
+            if isinstance(self.PRA, CLK):
+                self.PRA.reset()
 
     def init(self):
         for pid, vpn, mode in self.requests:
