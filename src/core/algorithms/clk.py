@@ -1,6 +1,5 @@
-from core.algorithms.page_replacement_algorithm import PageReplacementAlgorithm
-from core.constants import FRAME_QUANTITY
-
+from src.core.constants import FRAME_QUANTITY
+from src.core.algorithms.page_replacement_algorithm import PageReplacementAlgorithm
 
 class Clk(PageReplacementAlgorithm):
     def __init__(self):

@@ -1,7 +1,6 @@
 import random
-from core.page_table import PageTable
-from core.constants import PROGRAM_SIZE, PAGE_QUANTITY
-
+from src.core.page_table import PageTable
+from src.core.constants import PROGRAM_SIZE, PAGE_QUANTITY
 
 class Program:
     def __init__(self, pid: int, name: str = "generic program", data: str = "d"):

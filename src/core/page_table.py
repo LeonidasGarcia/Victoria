@@ -1,6 +1,5 @@
 from pandas import DataFrame
-from core.constants import PAGE_QUANTITY
-
+from src.core.constants import PAGE_QUANTITY
 
 class PageTable:
     def __init__(self):

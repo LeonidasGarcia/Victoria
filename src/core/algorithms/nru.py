@@ -1,5 +1,5 @@
-from core.algorithms.page_replacement_algorithm import PageReplacementAlgorithm
 import random
+from src.core.algorithms.page_replacement_algorithm import PageReplacementAlgorithm
 
 
 class Nru(PageReplacementAlgorithm):

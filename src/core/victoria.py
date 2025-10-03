@@ -1,19 +1,19 @@
-from core.ram_manager import RamManager
-from core.program import Program
 from pandas import DataFrame
-from core.page_table import PageTable
-from core.algorithms.page_replacement_algorithm import PageReplacementAlgorithm
-from core.algorithms.lru import Lru
-from core.algorithms.clk import Clk
 import random
-from core.constants import (
+from src.core.ram_manager import RamManager
+from src.core.program import Program
+from src.core.page_table import PageTable
+from src.core.algorithms.page_replacement_algorithm import PageReplacementAlgorithm
+from src.core.algorithms.lru import Lru
+from src.core.algorithms.clk import Clk
+from src.core.constants import (
     ACCESS_RAM_COST,
     PAGE_FAULT_COST,
     SWAP_IN_COST,
     SWAP_OUT_COST,
     RESET_R_INTERVAL,
 )
-from utils.metrics import Metrics
+from src.utils.metrics import Metrics
 
 
 class Victoria:
@@ -26,7 +26,7 @@ class Victoria:
         self.clock: int = 0
         self.disk: dict[(int, int):str] = dict()
         self.page_failure_count: int = 0
-        self.requests: list[tuple[int, int]] = list()
+        self.requests: list[tuple[int, int, str]] = list()
         self.PRA: PageReplacementAlgorithm = PRA
         self.next_reset_time: int = RESET_R_INTERVAL
         self.memory_access_count: int = 0
