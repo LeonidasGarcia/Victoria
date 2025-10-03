@@ -1,32 +1,34 @@
-from ram_manager.RamManager import RamManager
-from program.Program import Program
+from core.ram_manager import RamManager
+from core.program import Program
 from pandas import DataFrame
-from pag_table.PagTable import PagTable
-from page_replacement.PRA import PRA
-from page_replacement.LRU import LRU
-from page_replacement.CLK import CLK
+from core.page_table import PageTable
+from core.algorithms.page_replacement_algorithm import PageReplacementAlgorithm
+from core.algorithms.lru import Lru
+from core.algorithms.clk import Clk
 import random
-from static.Static import (
+from core.constants import (
     ACCESS_RAM_COST,
     PAGE_FAULT_COST,
     SWAP_IN_COST,
     SWAP_OUT_COST,
     RESET_R_INTERVAL,
 )
-from metrics.Metrics import Metrics
+from utils.metrics import Metrics
 
 
 class Victoria:
-    def __init__(self, PRA: PRA = LRU(), metrics: Metrics = Metrics()):
-        self.ram_manager = RamManager()
+    def __init__(
+        self, PRA: PageReplacementAlgorithm = Lru(), metrics: Metrics = Metrics()
+    ):
+        self.ram_manager: RamManager = RamManager()
         self.programs: dict[int, Program] = dict()
         self.program_count: int = 0
         self.clock: int = 0
         self.disk: dict[(int, int):str] = dict()
         self.page_failure_count: int = 0
         self.requests: list[tuple[int, int]] = list()
-        self.PRA = PRA
-        self.next_reset_time = RESET_R_INTERVAL
+        self.PRA: PageReplacementAlgorithm = PRA
+        self.next_reset_time: int = RESET_R_INTERVAL
         self.memory_access_count: int = 0
         self.metrics: Metrics = metrics
 
@@ -68,7 +70,7 @@ class Victoria:
         self.disk[(pid, vpn)] = data
         self.clock += SWAP_OUT_COST
 
-    def disk_swap_in(self, pid, vpn, pag_tab: PagTable, fpn, mode: str):
+    def disk_swap_in(self, pid, vpn, pag_tab: PageTable, fpn, mode: str):
         if (pid, vpn) not in self.disk:
             raise RuntimeError("Error, that reg is not in disk")
 
@@ -178,7 +180,7 @@ class Victoria:
         if self.clock >= self.next_reset_time:
             self.ram_manager.reset_r()
             self.next_reset_time = self.clock + RESET_R_INTERVAL
-            if isinstance(self.PRA, CLK):
+            if isinstance(self.PRA, Clk):
                 self.PRA.reset()
 
     def init(self):

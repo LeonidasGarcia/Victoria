@@ -1,6 +1,6 @@
 import random
-from pag_table.PagTable import PagTable
-from static.Static import PROGRAM_SIZE, PAGE_QUANTITY
+from core.page_table import PageTable
+from core.constants import PROGRAM_SIZE, PAGE_QUANTITY
 
 
 class Program:
@@ -12,7 +12,7 @@ class Program:
             raise RuntimeError("Illegal data size. Consider using a single character")
 
         self.data = data
-        self.page_table = PagTable()
+        self.page_table = PageTable()
         self.virtual_size = PROGRAM_SIZE
 
     def generate_memory_request(

@@ -1,6 +1,6 @@
 from pandas import DataFrame
 from numpy import ndarray
-from static.Static import FRAME_QUANTITY
+from core.constants import FRAME_QUANTITY
 
 
 class Metrics:

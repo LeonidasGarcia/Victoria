@@ -1,6 +1,6 @@
 import numpy as np
 from pandas import DataFrame
-from static.Static import FRAME_QUANTITY
+from core.constants import FRAME_QUANTITY
 
 
 class RamManager:

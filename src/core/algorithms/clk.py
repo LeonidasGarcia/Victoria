@@ -1,8 +1,8 @@
-from page_replacement.PRA import PRA
-from static.Static import FRAME_QUANTITY
+from core.algorithms.page_replacement_algorithm import PageReplacementAlgorithm
+from core.constants import FRAME_QUANTITY
 
 
-class CLK(PRA):
+class Clk(PageReplacementAlgorithm):
     def __init__(self):
         super().__init__()
         self.resume: int = 0

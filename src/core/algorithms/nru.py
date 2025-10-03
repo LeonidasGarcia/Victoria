@@ -1,10 +1,9 @@
-from page_replacement.PRA import PRA
-from pandas import DataFrame
+from core.algorithms.page_replacement_algorithm import PageReplacementAlgorithm
 import random
 
 
-class NRU(PRA):
-    def execute_algorithm(self, frame_usage: DataFrame) -> int:
+class Nru(PageReplacementAlgorithm):
+    def execute_algorithm(self, frame_usage) -> int:
         classes = {0: [], 1: [], 2: [], 3: []}
         filters = [
             (frame_usage["R"] == 0) & (frame_usage["M"] == 0),

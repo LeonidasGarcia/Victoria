@@ -1,8 +1,8 @@
 from pandas import DataFrame
-from static.Static import PAGE_QUANTITY
+from core.constants import PAGE_QUANTITY
 
 
-class PagTable:
+class PageTable:
     def __init__(self):
         self.table = DataFrame(
             {"frame": -1, "valid": False, "dirty": False, "referenced": False},
