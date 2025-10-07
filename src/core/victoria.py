@@ -13,7 +13,7 @@ from src.core.constants import (
     SWAP_OUT_COST,
     RESET_R_INTERVAL,
 )
-from src.utils.metrics import Metrics
+from src.util.metrics import Metrics
 
 
 class Victoria:

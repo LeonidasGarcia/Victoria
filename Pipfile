@@ -7,6 +7,9 @@ name = "pypi"
 numpy = "*"
 matplotlib = "*"
 pandas = "*"
+Pillow = "*"
+cairosvg = "*"
+lxml = "*"
 
 [dev-packages]
 
