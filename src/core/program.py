@@ -1,18 +1,14 @@
 import random
 from src.core.page_table import PageTable
-from src.core.constants import PROGRAM_SIZE, PAGE_QUANTITY
 
 class Program:
-    def __init__(self, pid: int, name: str = "generic program", data: str = "d"):
+    def __init__(self, pid: int, program_size: int, page_quantity: int, name: str = "generic program", data: str = "d"):
+        self.program_size = program_size
+        self.page_quantity = page_quantity
         self.pid = pid
         self.name = name
-
-        if len(data) != 1:
-            raise RuntimeError("Illegal data size. Consider using a single character")
-
         self.data = data
-        self.page_table = PageTable()
-        self.virtual_size = PROGRAM_SIZE
+        self.page_table = PageTable(self.page_quantity)
 
     def generate_memory_request(
         self, vpn: int = -1, mode: str = "r"
@@ -20,11 +16,11 @@ class Program:
         if vpn < 0:
             return (
                 self.pid,
-                random.randint(0, PAGE_QUANTITY - 1),
+                random.randint(0, self.page_quantity - 1),
                 random.choice(["w", "r"]),
             )
 
-        if vpn >= PAGE_QUANTITY:
+        if vpn >= self.page_quantity:
             raise RuntimeError("Illegal access to virtual memory")
 
         return (self.pid, vpn, mode)

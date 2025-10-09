@@ -1,11 +1,12 @@
 from pandas import DataFrame
-from src.core.constants import PAGE_QUANTITY
+
 
 class PageTable:
-    def __init__(self):
+    def __init__(self, page_quantity: int):
+        self.page_quantity = page_quantity
         self.table = DataFrame(
             {"frame": -1, "valid": False, "dirty": False, "referenced": False},
-            index=range(PAGE_QUANTITY),
+            index=range(self.page_quantity),
         )
 
         self.table.index.name = "VPN"

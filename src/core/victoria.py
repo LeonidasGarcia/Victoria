@@ -18,19 +18,32 @@ from src.util.metrics import Metrics
 
 class Victoria:
     def __init__(
-        self, PRA: PageReplacementAlgorithm = Lru(), metrics: Metrics = Metrics()
+        self,
+        ram: int,
+        program_size: int,
+        page_size: int,
+        pra: PageReplacementAlgorithm,
+        metrics: Metrics
     ):
-        self.ram_manager: RamManager = RamManager()
+        self.ram = ram
+        self.program_size = program_size
+        self.page_size = page_size
+        self.page_quantity = program_size // page_size
+        self.frame_quantity = ram // page_size
+        self.ram_manager: RamManager = RamManager(frame_quantity=self.frame_quantity)
         self.programs: dict[int, Program] = dict()
         self.program_count: int = 0
         self.clock: int = 0
-        self.disk: dict[(int, int):str] = dict()
+        self.disk: dict[tuple[int, int],str] = dict()
         self.page_failure_count: int = 0
         self.requests: list[tuple[int, int, str]] = list()
-        self.PRA: PageReplacementAlgorithm = PRA
+        pra.frame_quantity = self.frame_quantity
+        self.pra: PageReplacementAlgorithm = pra
         self.next_reset_time: int = RESET_R_INTERVAL
         self.memory_access_count: int = 0
+        metrics.frame_quantity = self.frame_quantity
         self.metrics: Metrics = metrics
+        self.current_request = 0
 
     def generate_random_requests(self, quantity=5):
         if self.program_count == 0:
@@ -48,7 +61,7 @@ class Victoria:
         if pid in self.programs:
             raise RuntimeError("Check your pid's")
 
-        self.programs[pid] = Program(pid, name, data)
+        self.programs[pid] = Program(program_size=self.program_size, page_quantity=self.page_quantity, pid=pid, name=name, data=data)
         self.program_count += 1
 
     def find_program(self, pid) -> Program:
@@ -107,7 +120,7 @@ class Victoria:
 
         if fpn == -1:
             self.page_failure_count += 1
-            fpn = self.PRA.execute_algorithm(self.ram_manager.frame_usage)
+            fpn = self.pra.execute_algorithm(self.ram_manager.frame_usage)
             program_target = self.ram_manager.find_vpn(fpn)
             pid_target, vpn_target = program_target
             program_target = self.find_program(pid=pid_target)
@@ -180,8 +193,8 @@ class Victoria:
         if self.clock >= self.next_reset_time:
             self.ram_manager.reset_r()
             self.next_reset_time = self.clock + RESET_R_INTERVAL
-            if isinstance(self.PRA, Clk):
-                self.PRA.reset()
+            if isinstance(self.pra, Clk):
+                self.pra.reset()
 
     def init(self):
         for pid, vpn, mode in self.requests:
@@ -197,3 +210,25 @@ class Victoria:
                 busy_frames=self.ram_manager.get_busy_frames_count(),
             )
         self.metrics.print_step_by_step()
+
+    def execute_next_request(self):
+        if self.current_request < len(self.requests):
+            pid, vpn, mode = self.requests[self.current_request]
+            program = self.find_program(pid)
+            self.masive_r_reset()
+            self.access_memory(program, vpn, mode)
+            self.current_request += 1
+
+    def get_current_request_data(self):
+        pid, vpn, mode = self.requests[self.current_request]
+        current_ram_log = self.metrics.get_current_ram_log(
+            total_faults=self.page_failure_count,
+            clock=self.clock,
+            total_accesses=self.memory_access_count,
+            busy_frames=self.ram_manager.get_busy_frames_count(),
+        )
+
+        return {
+            "current_request": (pid, vpn, mode),
+            "metrics": current_ram_log
+        }

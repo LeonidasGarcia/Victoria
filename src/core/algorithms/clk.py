@@ -1,4 +1,3 @@
-from src.core.constants import FRAME_QUANTITY
 from src.core.algorithms.page_replacement_algorithm import PageReplacementAlgorithm
 
 class Clk(PageReplacementAlgorithm):
@@ -8,13 +7,13 @@ class Clk(PageReplacementAlgorithm):
 
     def execute_algorithm(self, frame_usage) -> int:
         for i in range(2):
-            for fpn in range(self.resume, FRAME_QUANTITY):
+            for fpn in range(self.resume, self.frame_quantity):
                 R = frame_usage.loc[fpn, "R"]
 
                 if R == 1:
                     frame_usage.loc[fpn, "R"] = 0
                 else:
-                    if fpn + 1 >= FRAME_QUANTITY:
+                    if fpn + 1 >= self.frame_quantity:
                         self.reset()
                     else:
                         self.resume = fpn + 1

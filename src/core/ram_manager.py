@@ -1,11 +1,9 @@
 import numpy as np
 from pandas import DataFrame
-from src.core.constants import FRAME_QUANTITY
-
 
 class RamManager:
-    def __init__(self):
-        self.ram = np.full(FRAME_QUANTITY, "", dtype="U1")
+    def __init__(self, frame_quantity):
+        self.ram = np.full(frame_quantity, "", dtype="U100")
         self.frame_usage = DataFrame(
             {
                 "pid": -1,
@@ -15,11 +13,11 @@ class RamManager:
                 "R": 0,
                 "M": 0,
             },
-            index=range(FRAME_QUANTITY),
+            index=range(frame_quantity),
         )
 
         self.frame_usage.index.name = "FPN"
-        self.num_frames = FRAME_QUANTITY
+        self.num_frames = frame_quantity
 
     def update_frame(
         self, fpn, pid, vpn, data, referenced_time, mode: str, load_time=-1
