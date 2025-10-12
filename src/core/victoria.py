@@ -100,7 +100,7 @@ class Victoria:
         return (pid, vpn) in self.disk
 
     def handle_page_hit(
-        self, pag_tab: DataFrame, pid: int, vpn: int, mode: str, frame_usage: DataFrame
+        self, pag_tab: PageTable, pid: int, vpn: int, mode: str, frame_usage: DataFrame
     ):
         frame = pag_tab.table.loc[vpn, "frame"]
         fpn = frame_usage.loc[frame]
@@ -217,7 +217,28 @@ class Victoria:
             program = self.find_program(pid)
             self.masive_r_reset()
             self.access_memory(program, vpn, mode)
-            self.current_request += 1
+
+    def reset(self):
+        self.clock = 0
+        self.memory_access_count = 0
+        self.page_failure_count = 0
+        self.disk = {}
+        self.ram_manager.reset_memory()
+
+        for program in self.programs.values():
+            program.reset_page_table()
+
+        self.next_reset_time = RESET_R_INTERVAL
+
+
+    def reset_execution(self):
+        self.reset()
+        self.current_request = 0
+
+    def execution_should_continue(self) -> bool:
+        if self.current_request < len(self.requests):
+            return True
+        return False
 
     def get_current_request_data(self):
         pid, vpn, mode = self.requests[self.current_request]

@@ -3,7 +3,8 @@ from pandas import DataFrame
 
 class RamManager:
     def __init__(self, frame_quantity):
-        self.ram = np.full(frame_quantity, "", dtype="U100")
+        self.frame_quantity = frame_quantity
+        self.ram = np.full(self.frame_quantity, "", dtype="U100")
         self.frame_usage = DataFrame(
             {
                 "pid": -1,
@@ -42,6 +43,20 @@ class RamManager:
             return found_fpn[0]
         else:
             return -1
+
+    def reset_memory(self):
+        self.ram = np.full(self.frame_quantity, "", dtype="U100")
+        self.frame_usage = DataFrame(
+            {
+                "pid": -1,
+                "vpn": -1,
+                "load_time": 0,
+                "referenced_time": 0,
+                "R": 0,
+                "M": 0,
+            },
+            index=range(self.frame_quantity),
+        )
 
     def find_vpn(self, fpn) -> tuple[int, int]:
         found_reg = self.frame_usage.loc[fpn, ["pid", "vpn"]]

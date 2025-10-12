@@ -4,32 +4,21 @@ from typing import Optional, List
 
 from src.core.victoria import Victoria
 from src.ui.colors import victoria_background
+from src.ui.widgets.form.models.reference_trace_model import ReferenceTraceModel
 from src.util.lib import calculate_rows_and_columns
-
-
-def saludo():
-    print("saludo")
 
 class VictoriaCell(Frame):
     _BREAKPOINT = 350
 
-    def __init__(self, master, victoria: Victoria, **kwargs):
+    def __init__(self, master, victoria: Victoria, program_count: int, program_colors: List[str], reference_trace: Optional[List[ReferenceTraceModel]] = None, is_wide_layout: bool = True, **kwargs):
+        self.recursive_id: Optional[str] = None
+
         self.victoria: Victoria = victoria
-        self.victoria.load_program(0, "hola", "blue")
-        self.victoria.load_program(1, "hola", "red")
-        self.victoria.load_program(2, "hola", "green")
-        self.victoria.load_program(3, "hola", "blue")
-        self.victoria.load_program(4, "hola", "red")
-        self.victoria.load_program(5, "hola", "green")
-        self.victoria.load_program(6, "hola", "blue")
-        self.victoria.load_program(7, "hola", "red")
-        self.victoria.load_program(8, "hola", "green")
-        self.victoria.load_program(9, "hola", "green")
-        self.victoria.load_program(10, "hola", "green")
+        self.program_count: int = program_count
+        self.program_colors: List[str] = program_colors
+        self.reference_trace: Optional[List[ReferenceTraceModel]] = reference_trace
 
-        self.victoria.load_program(11, "hola", "green")
-
-        self.victoria.generate_random_requests(100)
+        self.victoria_setup()
 
         self.current_request_label: Optional[Label] = None
         self.change_frame_view_button: Optional[Button] = None
@@ -45,7 +34,7 @@ class VictoriaCell(Frame):
 
         self.programs_frame: Optional[Frame] = None
 
-        self.is_wide_layout: bool = False
+        self.is_wide_layout: bool = is_wide_layout
 
         super().__init__(master, **kwargs)
         self.grid_propagate(False)
@@ -70,14 +59,12 @@ class VictoriaCell(Frame):
         self.bind("<Configure>", self._check_size)
         self.execute_current_request()
 
-    def execute_current_request(self):
-        current_request_data = self.victoria.get_current_request_data()
-        self.victoria.execute_next_request()
-
+    def paint_metrics(self, current_request_data):
         current_request = current_request_data["current_request"]
         metrics = current_request_data["metrics"]
 
-        self.current_request_label.configure(text=f"{current_request[0]} accediendo a la pagina {current_request[1]} en modo {current_request[2]}")
+        self.current_request_label.configure(
+            text=f"{current_request[0]} accediendo a la pagina {current_request[1]} en modo {current_request[2]}")
 
         self.logic_time_label.configure(text=metrics["logic_time"])
         self.page_fault_count_label.configure(text=metrics["page_fault_count"])
@@ -93,7 +80,50 @@ class VictoriaCell(Frame):
                 color = victoria_background
             current_cell.configure(bg=color)
 
-        self.after(1000, self.execute_current_request)
+
+    def execute_current_request(self):
+        current_request_data = self.victoria.get_current_request_data()
+        self.victoria.execute_next_request()
+
+        self.paint_metrics(current_request_data=current_request_data)
+
+        self.victoria.current_request += 1
+
+        if self.victoria.execution_should_continue():
+            self.recursive_id = self.after(1000, self.execute_current_request)
+
+    def stop_current_request(self):
+        if self.recursive_id:
+            self.after_cancel(self.recursive_id)
+            self.recursive_id = None
+
+    def resume_current_request(self):
+        if not self.recursive_id:
+            self.execute_current_request()
+
+    def reset_current_request(self):
+        if self.recursive_id:
+            self.stop_current_request()
+        self.victoria.reset_execution()
+        self.paint_metrics(self.victoria.get_current_request_data())
+
+    def victoria_setup(self):
+        program_count = self.program_count
+        reference_trace = self.reference_trace
+
+        for i in range(program_count):
+            self.victoria.load_program(pid=i, name=f"program_{i}", data=self.program_colors[i])
+
+        if not self.reference_trace:
+            self.victoria.generate_random_requests(50)
+            return
+
+        for reference in reference_trace:
+            pid = reference.pid
+            page = reference.page
+            mode = reference.mode
+
+            self.victoria.requests.append((pid, page, mode))
 
     def top_frame_setup(self):
         top_frame = self.top_frame
@@ -102,7 +132,7 @@ class VictoriaCell(Frame):
         top_frame.grid_columnconfigure(1, weight=1)
         top_frame.grid_rowconfigure(0, weight=1)
 
-        current_request = tk.Label(top_frame, text="hola", bg="yellow")
+        current_request = tk.Label(top_frame, bg="yellow")
         current_request.grid(row=0, column=0, sticky="nsew")
 
         change_frame_view_button = tk.Button(top_frame, text="change view", bg="red")
@@ -144,8 +174,6 @@ class VictoriaCell(Frame):
     def bottom_frame_setup(self):
         bottom_frame = self.bottom_frame
 
-        bottom_frame.grid_columnconfigure(0, weight=0)
-        bottom_frame.grid_columnconfigure(1, weight=0)
         bottom_frame.grid_rowconfigure(0, weight=1)
 
         metrics_frame = tk.Frame(bottom_frame, bg="cyan")
@@ -216,7 +244,7 @@ class VictoriaCell(Frame):
 
             program_frame.grid(row=i, column=0, sticky="nsew")
             tk.Label(program_frame, bg=program.data, width=5, height=2).grid(row=0, column=0)
-            tk.Label(program_frame, text=program.name).grid(row=0, column=1, sticky="nsew")
+            tk.Label(program_frame, text=f"PID: {program.pid}").grid(row=0, column=1, sticky="nsew")
 
         self.metrics_frame = metrics_frame
         self.programs_frame = programs_frame
@@ -237,6 +265,7 @@ class VictoriaCell(Frame):
                 self.is_wide_layout = False
 
     def _apply_wide_layout(self):
+        print("_apply_wide_layout")
         bottom_frame = self.bottom_frame
 
         bottom_frame.grid_columnconfigure(0, weight=1)
@@ -254,6 +283,7 @@ class VictoriaCell(Frame):
         programs_frame.grid(row=0, column=1, sticky="nsew")
 
     def _apply_compact_layout(self):
+        print("_apply_compact_layout")
         bottom_frame = self.bottom_frame
 
         bottom_frame.grid_columnconfigure(0, weight=1)

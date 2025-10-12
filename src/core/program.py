@@ -10,6 +10,9 @@ class Program:
         self.data = data
         self.page_table = PageTable(self.page_quantity)
 
+    def reset_page_table(self):
+        self.page_table.reset()
+
     def generate_memory_request(
         self, vpn: int = -1, mode: str = "r"
     ) -> tuple[int, int, str]:

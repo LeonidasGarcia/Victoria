@@ -2,14 +2,17 @@ import tkinter as tk
 from tkinter import Frame
 
 from src.ui.colors import victoria_background
+from src.ui.config_presets import ConfigPresets
 from src.ui.widgets.extra.victoria_label import VictoriaLabel
+from src.ui.widgets.layout.body import Body
 from src.util.svg_conversor import load_svg_icon
 
 
 class TopBar(Frame):
 
-    def __init__(self, master, **kwargs):
+    def __init__(self, master, body: Body,  **kwargs):
         self.svg_icon = None
+        self.body = body
 
         self.title = None
         self.welcome_page_button = None
@@ -42,10 +45,10 @@ class TopBar(Frame):
         title = VictoriaLabel(main_frame, bg=victoria_background)
         title.grid(row=0, column=0, sticky="nsew")
 
-        welcome_page_button = tk.Button(main_frame, text="Inicio", bg=victoria_background,)
+        welcome_page_button = tk.Button(main_frame, text="Inicio", bg=victoria_background, command=lambda: self.body.load_start_screen())
         welcome_page_button.grid(row=0, column=1, sticky="nsew")
 
-        simulate_page_button = tk.Button(main_frame, text="Simular", bg=victoria_background)
+        simulate_page_button = tk.Button(main_frame, text="Simular", bg=victoria_background, command=lambda : self.body.load_form_screen())
         simulate_page_button.grid(row=0, column=2, sticky="nsew")
 
         self.title = title
@@ -65,7 +68,7 @@ class TopBar(Frame):
 
         self.svg_icon = load_svg_icon("../assets/config_icon.svg", (46, 46))
 
-        config_page_button = tk.Button(config_frame, width=100, image=self.svg_icon, bg=victoria_background)
+        config_page_button = tk.Button(config_frame, width=100, image=self.svg_icon, bg=victoria_background, command=lambda: ConfigPresets(self.winfo_toplevel()))
         config_page_button.grid(row=0, column=1, sticky="ns")
 
         self.config_page_button = config_page_button

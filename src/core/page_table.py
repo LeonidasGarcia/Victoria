@@ -11,6 +11,12 @@ class PageTable:
 
         self.table.index.name = "VPN"
 
+    def reset(self):
+        self.table = DataFrame(
+            {"frame": -1, "valid": False, "dirty": False, "referenced": False},
+            index=range(self.page_quantity),
+        )
+
     def check_dirty(self, vpn):
         try:
             table = self.table
