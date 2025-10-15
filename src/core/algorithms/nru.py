@@ -1,9 +1,14 @@
 import random
+from typing import Optional
+
+from pandas import DataFrame
+
 from src.core.algorithms.page_replacement_algorithm import PageReplacementAlgorithm
 
 
 class Nru(PageReplacementAlgorithm):
-    def execute_algorithm(self, frame_usage) -> int:
+    def execute_algorithm(self, frame_usage: DataFrame,
+                          next_requests: Optional[list[tuple[int, int, str]]] = None) -> int:
         classes = {0: [], 1: [], 2: [], 3: []}
         filters = [
             (frame_usage["R"] == 0) & (frame_usage["M"] == 0),

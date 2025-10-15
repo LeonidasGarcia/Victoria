@@ -7,7 +7,6 @@ from src.ui.widgets.screen.form_screen import FormScreen
 from src.ui.widgets.screen.simulate_screen import SimulateScreen
 from src.ui.widgets.screen.start_screen import StartScreen
 
-
 class Body(Frame):
     def __init__(self, master, **kwargs):
         self.current_child = list()

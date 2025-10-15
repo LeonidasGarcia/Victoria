@@ -4,6 +4,7 @@ from typing import Optional
 
 from pydantic import ValidationError
 
+from src.ui.colors import victoria_background
 from src.ui.widgets.form.models.program_model import ProgramModel
 
 
@@ -15,16 +16,19 @@ class ProgramForm(Frame):
 
         super().__init__(master, **kwargs)
         self.grid_propagate(False)
+        self.configure(bg=victoria_background)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
-        tk.Label(self, text="Programas").grid(row=0, column=0, sticky=tk.W)
+        tk.Label(self, text="Programas", bg=victoria_background, fg="white").grid(row=0, column=0, sticky=tk.W)
 
-        tk.Label(self, text="Número de programas").grid(row=1, column=0, sticky=tk.W)
-        self.program_count_input = tk.Entry(self, textvariable=self.program_count_string_var)
+        tk.Label(self, text="Número de programas", bg=victoria_background, fg="white").grid(row=1, column=0,
+                                                                                            sticky=tk.W)
+        self.program_count_input = tk.Entry(self, textvariable=self.program_count_string_var, bg=victoria_background,
+                                            fg="white")
         self.program_count_input.grid(row=1, column=1, sticky=tk.NSEW)
 
     def clear_entries(self):

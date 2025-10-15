@@ -1,3 +1,4 @@
+import tkinter
 import tkinter as tk
 from tkinter import Frame, Label, Button, ttk
 from typing import Optional, List
@@ -7,10 +8,12 @@ from src.ui.colors import victoria_background
 from src.ui.widgets.form.models.reference_trace_model import ReferenceTraceModel
 from src.util.lib import calculate_rows_and_columns
 
+
 class VictoriaCell(Frame):
     _BREAKPOINT = 350
 
-    def __init__(self, master, victoria: Victoria, program_count: int, program_colors: List[str], reference_trace: Optional[List[ReferenceTraceModel]] = None, is_wide_layout: bool = True, **kwargs):
+    def __init__(self, master, victoria: Victoria, program_count: int, program_colors: List[str],
+                 reference_trace: Optional[List[ReferenceTraceModel]] = None, is_wide_layout: bool = True, **kwargs):
         self.recursive_id: Optional[str] = None
 
         self.victoria: Victoria = victoria
@@ -21,7 +24,6 @@ class VictoriaCell(Frame):
         self.victoria_setup()
 
         self.current_request_label: Optional[Label] = None
-        self.change_frame_view_button: Optional[Button] = None
         self.cell_frame: Optional[Frame] = None
         self.cells: List[Label] = []
 
@@ -37,24 +39,32 @@ class VictoriaCell(Frame):
         self.is_wide_layout: bool = is_wide_layout
 
         super().__init__(master, **kwargs)
+        self.configure(bg=victoria_background)
+        self.configure(padx=10, pady=10)
         self.grid_propagate(False)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=4)
-        self.grid_rowconfigure(2, weight=6)
+        self.grid_rowconfigure(1, weight=0)
+        self.grid_rowconfigure(2, weight=8)
+        self.grid_rowconfigure(3, weight=0)
+        self.grid_rowconfigure(4, weight=6)
 
         self.top_frame = tk.Frame(self, bg="red")
         self.top_frame_setup()
         self.top_frame.grid(row=0, column=0, sticky="nsew")
 
+        tk.Frame(self, bg=victoria_background).grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
+
         self.mid_frame = tk.Frame(self, bg=victoria_background)
         self.mid_frame_setup()
-        self.mid_frame.grid(row=1, column=0, sticky="nsew")
+        self.mid_frame.grid(row=2, column=0, sticky="nsew")
+
+        tk.Frame(self, bg=victoria_background).grid(row=3, column=0, sticky="nsew", padx=5, pady=5)
 
         self.bottom_frame = tk.Frame(self, bg=victoria_background)
         self.bottom_frame_setup()
-        self.bottom_frame.grid(row=2, column=0, sticky="nsew")
+        self.bottom_frame.grid(row=4, column=0, sticky="nsew", padx=5, pady=5)
 
         self.bind("<Configure>", self._check_size)
         self.execute_current_request()
@@ -79,7 +89,6 @@ class VictoriaCell(Frame):
             if color == "":
                 color = victoria_background
             current_cell.configure(bg=color)
-
 
     def execute_current_request(self):
         current_request_data = self.victoria.get_current_request_data()
@@ -128,18 +137,13 @@ class VictoriaCell(Frame):
     def top_frame_setup(self):
         top_frame = self.top_frame
 
-        top_frame.grid_columnconfigure(0, weight=5)
-        top_frame.grid_columnconfigure(1, weight=1)
+        top_frame.grid_columnconfigure(0, weight=1)
         top_frame.grid_rowconfigure(0, weight=1)
 
-        current_request = tk.Label(top_frame, bg="yellow")
+        current_request = tk.Label(top_frame, bg=victoria_background, fg="white", borderwidth=2, relief="solid")
         current_request.grid(row=0, column=0, sticky="nsew")
 
-        change_frame_view_button = tk.Button(top_frame, text="change view", bg="red")
-        change_frame_view_button.grid(row=0, column=1, sticky="nsew")
-
         self.current_request_label = current_request
-        self.change_frame_view_button = change_frame_view_button
 
     def mid_frame_setup(self):
         mid_frame = self.mid_frame
@@ -157,7 +161,7 @@ class VictoriaCell(Frame):
         for i in range(rows):
             for j in range(columns):
                 cell_frame.grid_columnconfigure(j, weight=1)
-                cell = tk.Label(cell_frame, text=current_page_frame, borderwidth=1, relief="ridge")
+                cell = tk.Label(cell_frame, text=current_page_frame, fg="white", borderwidth=1, relief="solid")
                 cell.grid(row=i, column=j, sticky="nsew")
                 self.cells.append(cell)
                 current_page_frame += 1
@@ -174,57 +178,87 @@ class VictoriaCell(Frame):
     def bottom_frame_setup(self):
         bottom_frame = self.bottom_frame
 
+        bottom_frame.grid_columnconfigure(0, weight=1)
+        bottom_frame.grid_columnconfigure(1, weight=1)
         bottom_frame.grid_rowconfigure(0, weight=1)
+        bottom_frame.grid_rowconfigure(1, weight=0)
 
-        metrics_frame = tk.Frame(bottom_frame, bg="cyan")
+        metrics_frame = tk.Frame(bottom_frame, bg=victoria_background, padx=5, pady=5)
 
         metrics_frame.grid_columnconfigure(0, weight=1)
-        metrics_frame.grid_rowconfigure(0, weight=1)
-        metrics_frame.grid_rowconfigure(1, weight=1)
         metrics_frame.grid_rowconfigure(2, weight=1)
-        metrics_frame.grid_rowconfigure(3, weight=1)
         metrics_frame.grid_rowconfigure(4, weight=1)
+        metrics_frame.grid_rowconfigure(6, weight=1)
+        metrics_frame.grid_rowconfigure(8, weight=1)
+        metrics_frame.grid_rowconfigure(10, weight=1)
 
-        metrics_frame.grid(row=0, column=0, sticky="nsew")
+        metrics_frame.grid(row=0, column=0, sticky="ew")
 
-        current_request_data =self.victoria.get_current_request_data()["metrics"]
+        current_request_data = self.victoria.get_current_request_data()["metrics"]
 
-        self.logic_time_label = tk.Label(metrics_frame, text=current_request_data["logic_time"])
-        self.logic_time_label.grid(row=0, column=0, sticky="nsew")
+        tk.Label(metrics_frame, text="Métricas", bg=victoria_background, fg="white").grid(row=0, column=0,
+                                                                                          sticky="nsw")
 
-        self.page_fault_count_label = tk.Label(metrics_frame, text=current_request_data["page_fault_count"])
-        self.page_fault_count_label.grid(row=1, column=0, sticky="nsew")
+        tk.Frame(metrics_frame, bg=victoria_background).grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
 
-        self.page_fault_rate_label = tk.Label(metrics_frame, text=current_request_data["page_fault_rate"])
-        self.page_fault_rate_label.grid(row=2, column=0, sticky="nsew")
+        self.logic_time_label = tk.Label(metrics_frame, text=current_request_data["logic_time"], bg=victoria_background,
+                                         fg="white", borderwidth=2, relief="solid")
+        self.logic_time_label.grid(row=2, column=0, sticky="ew")
 
-        self.average_time_accesses_label = tk.Label(metrics_frame, text=current_request_data["average_time_access"])
-        self.average_time_accesses_label.grid(row=3, column=0, sticky="nsew")
+        tk.Frame(metrics_frame, bg=victoria_background).grid(row=3, column=0, sticky="nsew", padx=5, pady=5)
 
-        self.memory_usage_label = tk.Label(metrics_frame, text=current_request_data["memory_usage"])
-        self.memory_usage_label.grid(row=4, column=0, sticky="nsew")
+        self.page_fault_count_label = tk.Label(metrics_frame, text=current_request_data["page_fault_count"],
+                                               bg=victoria_background,
+                                               fg="white", borderwidth=2, relief="solid")
+        self.page_fault_count_label.grid(row=4, column=0, sticky="ew")
 
-        programs_frame = tk.Frame(bottom_frame, bg="blue")
+        tk.Frame(metrics_frame, bg=victoria_background).grid(row=5, column=0, sticky="nsew", padx=5, pady=5)
 
-        programs_frame.columnconfigure(0, weight=1)
-        programs_frame.columnconfigure(1, weight=0)
-        programs_frame.rowconfigure(0, weight=1)
+        self.page_fault_rate_label = tk.Label(metrics_frame, text=current_request_data["page_fault_rate"],
+                                              bg=victoria_background,
+                                              fg="white", borderwidth=2, relief="solid")
+        self.page_fault_rate_label.grid(row=6, column=0, sticky="ew")
 
-        programs_frame.grid(row=0, column=1, sticky="nsew")
+        tk.Frame(metrics_frame, bg=victoria_background).grid(row=7, column=0, sticky="nsew", padx=5, pady=5)
 
-        canvas = tk.Canvas(programs_frame, borderwidth=0, bg=victoria_background)
+        self.average_time_accesses_label = tk.Label(metrics_frame, text=current_request_data["average_time_access"],
+                                                    bg=victoria_background, fg="white", borderwidth=2, relief="solid")
+        self.average_time_accesses_label.grid(row=8, column=0, sticky="ew")
+
+        tk.Frame(metrics_frame, bg=victoria_background).grid(row=9, column=0, sticky="nsew", padx=5, pady=5)
+
+        self.memory_usage_label = tk.Label(metrics_frame, text=current_request_data["memory_usage"],
+                                           bg=victoria_background, fg="white", borderwidth=2, relief="solid")
+        self.memory_usage_label.grid(row=10, column=0, sticky="ew")
+
+        programs_frame = tk.Frame(bottom_frame, height=15, bg=victoria_background)
+
+        programs_frame.grid_columnconfigure(0, weight=1)
+        programs_frame.grid_columnconfigure(1, weight=0)
+        programs_frame.grid_rowconfigure(0, weight=2)
+        programs_frame.grid_rowconfigure(2, weight=8)
+
+        programs_frame.grid(row=0, column=1, sticky="ew", padx=5, pady=5)
+
+        tk.Label(programs_frame, text="Lista de programas", bg=victoria_background, fg="white").grid(row=0, column=0,
+                                                                                                     columnspan=2,
+                                                                                                     sticky="nsw")
+
+        tk.Frame(programs_frame, bg=victoria_background).grid(row=1, column=0, padx=5, pady=5)
+
+        canvas = tk.Canvas(programs_frame, bg=victoria_background, height=150)
 
         canvas.grid_columnconfigure(0, weight=1)
         canvas.grid_rowconfigure(0, weight=1)
 
-        canvas.grid(row=0, column=0, sticky="nsew")
+        canvas.grid(row=2, column=0, sticky="nsew")
 
         scrollbar = ttk.Scrollbar(programs_frame, orient="vertical", command=canvas.yview)
-        scrollbar.grid(row=0, column=1, sticky="ns")
+        scrollbar.grid(row=2, column=1, sticky="ns")
 
         canvas.configure(yscrollcommand=scrollbar.set)
 
-        wrapper_program_frame = tk.Frame(canvas)
+        wrapper_program_frame = tk.Frame(canvas, bg=victoria_background)
 
         wrapper_program_frame.grid_columnconfigure(0, weight=1)
 
@@ -235,16 +269,24 @@ class VictoriaCell(Frame):
 
         programs = self.victoria.programs
 
+        spaced_row = 0
         for i, program in programs.items():
-            program_frame = tk.Frame(wrapper_program_frame, bg=victoria_background)
+            program_frame = tk.Frame(wrapper_program_frame, bg=victoria_background, borderwidth=1, relief="solid")
 
             program_frame.grid_columnconfigure(0, weight=0)
             program_frame.grid_columnconfigure(1, weight=1)
             program_frame.grid_rowconfigure(0, weight=1)
 
-            program_frame.grid(row=i, column=0, sticky="nsew")
+            program_frame.grid(row=spaced_row + i, column=0, sticky="ew")
             tk.Label(program_frame, bg=program.data, width=5, height=2).grid(row=0, column=0)
-            tk.Label(program_frame, text=f"PID: {program.pid}").grid(row=0, column=1, sticky="nsew")
+            tk.Label(program_frame, text=f"PID: {program.pid}", bg=victoria_background, fg="white").grid(row=0,
+                                                                                                         column=1,
+                                                                                                         sticky="ew")
+
+            tk.Frame(wrapper_program_frame, bg=victoria_background).grid(row=spaced_row + i + 1, column=0,
+                                                                         sticky="nsew", padx=5,
+                                                                         pady=2)
+            spaced_row += 1
 
         self.metrics_frame = metrics_frame
         self.programs_frame = programs_frame
@@ -279,8 +321,8 @@ class VictoriaCell(Frame):
         metrics_frame.grid_remove()
         programs_frame.grid_remove()
 
-        metrics_frame.grid(row=0, column=0, sticky="nsew")
-        programs_frame.grid(row=0, column=1, sticky="nsew")
+        metrics_frame.grid(row=0, column=0, sticky="ew")
+        programs_frame.grid(row=0, column=1, sticky="ew")
 
     def _apply_compact_layout(self):
         print("_apply_compact_layout")
@@ -297,5 +339,5 @@ class VictoriaCell(Frame):
         metrics_frame.grid_remove()
         programs_frame.grid_remove()
 
-        metrics_frame.grid(row=0, column=0, sticky="nsew")
-        programs_frame.grid(row=1, column=0, sticky="nsew")
+        metrics_frame.grid(row=0, column=0, sticky="ew")
+        programs_frame.grid(row=1, column=0, sticky="ew")

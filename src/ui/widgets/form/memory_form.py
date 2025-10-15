@@ -5,6 +5,7 @@ from typing import Optional
 
 from pydantic import ValidationError
 
+from src.ui.colors import victoria_background
 from src.ui.widgets.form.models.memory_model import MemoryModel
 
 
@@ -25,13 +26,13 @@ class MemoryForm(Frame):
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=0)
+        self.grid_rowconfigure(1, weight=2)
 
-        title_label = tk.Label(self, text="Memoria")
+        title_label = tk.Label(self, text="Memoria", bg=victoria_background, fg="white")
         title_label.grid(row=0, column=0, columnspan=2, sticky="w")
 
-        inputs_frame = tk.Frame(self, bg="yellow")
+        inputs_frame = tk.Frame(self, bg=victoria_background)
 
         inputs_frame.grid_columnconfigure(0, weight=1)
         inputs_frame.grid_columnconfigure(1, weight=1)
@@ -41,17 +42,21 @@ class MemoryForm(Frame):
 
         inputs_frame.grid(row=1, column=0, columnspan=2, sticky="nsew")
 
-        tk.Label(inputs_frame, text="RAM").grid(row=0, column=0, sticky="w")
-        self.ram_input = tk.Entry(inputs_frame, textvariable=self.ram_string_var)
-        self.ram_input.grid(row=0, column=1, sticky="nsew")
+        tk.Label(inputs_frame, text="RAM", bg=victoria_background, fg="white").grid(row=0, column=0, sticky="w")
+        self.ram_input = tk.Entry(inputs_frame, textvariable=self.ram_string_var, bg=victoria_background, fg="white")
+        self.ram_input.grid(row=0, column=1, sticky="ew")
 
-        tk.Label(inputs_frame, text="Tamaño del programa").grid(row=1, column=0, sticky="w")
-        self.program_size_input = tk.Entry(inputs_frame, textvariable=self.program_size_string_var)
-        self.program_size_input.grid(row=1, column=1, sticky="nsew")
+        tk.Label(inputs_frame, text="Tamaño del programa", bg=victoria_background, fg="white").grid(row=1, column=0,
+                                                                                                    sticky="w")
+        self.program_size_input = tk.Entry(inputs_frame, textvariable=self.program_size_string_var,
+                                           bg=victoria_background, fg="white")
+        self.program_size_input.grid(row=1, column=1, sticky="ew")
 
-        tk.Label(inputs_frame, text="Tamaño de página").grid(row=2, column=0, sticky="w")
-        self.page_size_input = tk.Entry(inputs_frame, textvariable=self.page_size_string_var)
-        self.page_size_input.grid(row=2, column=1, sticky="nsew")
+        tk.Label(inputs_frame, text="Tamaño de página", bg=victoria_background, fg="white").grid(row=2, column=0,
+                                                                                                 sticky="w")
+        self.page_size_input = tk.Entry(inputs_frame, textvariable=self.page_size_string_var, bg=victoria_background,
+                                        fg="white")
+        self.page_size_input.grid(row=2, column=1, sticky="ew")
 
     def clear_entries(self):
         self.ram_string_var.set("")

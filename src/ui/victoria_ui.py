@@ -11,14 +11,10 @@ victoria_ui.title("Victoria")
 victoria_ui.geometry("1600x800")
 
 victoria_ui.grid_columnconfigure(0, weight=1)
-victoria_ui.grid_rowconfigure(2, weight=1)
-
-navigator = Navigator(victoria_ui, height="30px", bg=victoria_background)
-navigator.grid(row=1, column=0, sticky="nsew")
+victoria_ui.grid_rowconfigure(1, weight=1)
 
 body = Body(victoria_ui, bg=victoria_background)
-body.grid(row=2, column=0, sticky="nsew")
+body.grid(row=1, column=0, sticky="nsew")
 
-top_bar= TopBar(victoria_ui, height="80px", body=body, bg=victoria_background)
+top_bar = TopBar(victoria_ui, height="80px", body=body, bg=victoria_background)
 top_bar.grid(row=0, column=0, sticky="nsew")
-

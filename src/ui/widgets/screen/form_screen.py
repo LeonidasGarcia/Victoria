@@ -6,10 +6,12 @@ from src.core.algorithms.clk import Clk
 from src.core.algorithms.fifo import Fifo
 from src.core.algorithms.lru import Lru
 from src.core.algorithms.nru import Nru
+from src.core.algorithms.optimal import Optimal
 from src.core.algorithms.page_replacement_algorithm import PageReplacementAlgorithm
 from src.core.victoria import Victoria
 from src.data.preset import Preset
 from src.data.presets_central import presets_central
+from src.ui.colors import victoria_background
 from src.ui.widgets.form.algorithm_form import AlgorithmForm
 from src.ui.widgets.form.memory_form import MemoryForm
 from src.ui.widgets.form.program_form import ProgramForm
@@ -24,42 +26,56 @@ class FormScreen(Frame):
 
         super().__init__(master, **kwargs)
         self.grid_propagate(False)
+        self.configure(bg=victoria_background, padx=30, pady=30)
 
         self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
-        self.grid_rowconfigure(0, weight=1)
+        self.grid_columnconfigure(2, weight=3)
+        self.grid_columnconfigure(4, weight=1)
+        self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=1)
-        self.grid_rowconfigure(2, weight=1)
+        self.grid_rowconfigure(2, weight=2)
+        self.grid_rowconfigure(3, weight=2)
 
         self.presets_combobox = ttk.Combobox(self, textvariable=self.selected_preset_input, state="readonly")
         self.presets_combobox.grid(row=0, column=0, sticky="w")
 
-        self.memory_form = MemoryForm(self, bg="red")
-        self.memory_form.grid(row=1, column=0, sticky=tk.NSEW)
+        self.memory_form = MemoryForm(self, bg=victoria_background)
+        self.memory_form.grid(row=1, column=0, rowspan=2, sticky=tk.NSEW)
 
         self.algorithm_form = AlgorithmForm(self)
-        self.algorithm_form.grid(row=2, column=0, sticky=tk.NSEW)
+        self.algorithm_form.grid(row=3, column=0, sticky=tk.NSEW)
+
+        tk.Frame(self, bg=victoria_background).grid(row=0, column=1, rowspan=4, sticky=tk.NSEW, padx=20, pady=20)
 
         self.program_form = ProgramForm(self)
-        self.program_form.grid(row=0, column=1, sticky=tk.NSEW)
+        self.program_form.grid(row=0, column=2, rowspan=2, sticky=tk.NSEW)
 
-        self.reference_trace_form = ReferenceTraceForm(self, memory_form=self.memory_form, program_form=self.program_form)
-        self.reference_trace_form.grid(row=1, rowspan=2, column=1, sticky=tk.NSEW)
+        self.reference_trace_form = ReferenceTraceForm(self, memory_form=self.memory_form,
+                                                       program_form=self.program_form)
+        self.reference_trace_form.grid(row=2, rowspan=2, column=2, sticky=tk.NSEW)
 
-        self.start_frame = tk.Frame(self)
+        tk.Frame(self, bg=victoria_background).grid(row=0, column=3, rowspan=4, sticky=tk.NSEW, padx=20, pady=20)
+
+        self.start_frame = tk.Frame(self, bg=victoria_background)
 
         self.start_frame.grid_columnconfigure(0, weight=1)
         self.start_frame.grid_rowconfigure(0, weight=1)
-        self.start_frame.grid_rowconfigure(1, weight=1)
+        self.start_frame.grid_rowconfigure(1, weight=0)
+        self.start_frame.grid_rowconfigure(2, weight=1)
 
-        self.start_frame.grid(row=0, rowspan=3, column=2, sticky=tk.NSEW)
+        self.start_frame.grid(row=0, rowspan=4, column=4, sticky=tk.NSEW)
 
-        self.save_button = tk.Button(self.start_frame, text="Guardar como preset", state=tk.DISABLED, command=self.save_preset)
-        self.save_button.grid(row=0, column=0, sticky=tk.S)
+        self.save_button = tk.Button(self.start_frame, bg=victoria_background, fg="white", text="Guardar como preset",
+                                     state="normal",
+                                     command=self.save_preset)
+        self.save_button.grid(row=0, column=0, sticky="s")
 
-        self.start_button = tk.Button(self.start_frame, text="Iniciar", state=tk.DISABLED, command=self.load_simulation)
-        self.start_button.grid(row=1, column=0, sticky=tk.N)
+        tk.Frame(self.start_frame, bg=victoria_background).grid(row=1, column=0, sticky="nsew", padx=10,
+                                                                pady=10)
+
+        self.start_button = tk.Button(self.start_frame, bg=victoria_background, fg="white", text="Iniciar",
+                                      state=tk.DISABLED, command=self.load_simulation)
+        self.start_button.grid(row=2, column=0, sticky="n")
 
         self.reload_presets()
 
@@ -73,17 +89,20 @@ class FormScreen(Frame):
         memory_form_model, error = self.memory_form.get_current_entries()
 
         if error:
-            raise RuntimeError(error)
+            messagebox.showerror("Error", error)
+            return
 
         program_form_model, error = self.program_form.get_current_entries()
 
         if error:
-            raise RuntimeError(error)
+            messagebox.showerror("Error", error)
+            return
 
         reference_trace_models, error = self.reference_trace_form.get_current_entries()
 
         if error:
-            raise RuntimeError(error)
+            messagebox.showerror("Error", error)
+            return
 
         selected_preset.ram = memory_form_model.ram
         selected_preset.program_size = memory_form_model.program_size
@@ -104,7 +123,8 @@ class FormScreen(Frame):
 
         selected_preset.reference_trace = new_reference_trace
 
-        selected_preset.name = simpledialog.askstring("Nombre del nuevo preset", "Introduce el nombre de este preset", parent=self.winfo_toplevel())
+        selected_preset.name = simpledialog.askstring("Nombre del nuevo preset", "Introduce el nombre de este preset",
+                                                      parent=self.winfo_toplevel())
 
         self.selected_preset, error = presets_central.save_preset(selected_preset)
 
@@ -112,13 +132,16 @@ class FormScreen(Frame):
             messagebox.showerror("Error", error)
         else:
             self.reload_presets()
+            self.clear_entries()
 
     def on_selection_change(self):
         self.selected_preset = presets_central.get_preset(preset_name=self.selected_preset_input.get())
         if self.selected_preset:
             self.set_fields()
+            self.save_button.config(state="disabled")
         else:
             self.clear_entries()
+            self.save_button.config(state="normal")
 
     def clear_entries(self):
         self.memory_form.clear_entries()
@@ -173,7 +196,6 @@ class FormScreen(Frame):
             reference_trace=current_preset.reference_trace
         )
 
-
     def check_if_can_start(self):
         if self.algorithm_form.valid_state and self.reference_trace_form.reference_trace_table.get_children():
             self.enable_entries()
@@ -201,14 +223,17 @@ class FormScreen(Frame):
             (algorithm_form_model.fifo, Fifo),
             (algorithm_form_model.nru, Nru),
             (algorithm_form_model.clk, Clk),
-            # space for optimal
+            (algorithm_form_model.optimal, Optimal)
         ]
 
         victoria_units: List[Victoria] = []
 
         for selected, Pra in algoritms_to_load:
             if selected:
-                victoria = Victoria(ram=ram, program_size=program_size, page_size=page_size, pra=Pra(), metrics=Metrics())
+                victoria = Victoria(ram=ram, program_size=program_size, page_size=page_size, pra=Pra(),
+                                    metrics=Metrics())
                 victoria_units.append(victoria)
 
-        self.master.create_simulate_screen(victoria_units=victoria_units, program_count=program_form_model.program_count, reference_trace=reference_trace)
+        self.master.create_simulate_screen(victoria_units=victoria_units,
+                                           program_count=program_form_model.program_count,
+                                           reference_trace=reference_trace)

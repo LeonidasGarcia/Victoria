@@ -1,5 +1,7 @@
 from pandas import DataFrame
 import random
+
+from src.core.algorithms.optimal import Optimal
 from src.core.ram_manager import RamManager
 from src.core.program import Program
 from src.core.page_table import PageTable
@@ -18,12 +20,12 @@ from src.util.metrics import Metrics
 
 class Victoria:
     def __init__(
-        self,
-        ram: int,
-        program_size: int,
-        page_size: int,
-        pra: PageReplacementAlgorithm,
-        metrics: Metrics
+            self,
+            ram: int,
+            program_size: int,
+            page_size: int,
+            pra: PageReplacementAlgorithm,
+            metrics: Metrics
     ):
         self.ram = ram
         self.program_size = program_size
@@ -34,7 +36,7 @@ class Victoria:
         self.programs: dict[int, Program] = dict()
         self.program_count: int = 0
         self.clock: int = 0
-        self.disk: dict[tuple[int, int],str] = dict()
+        self.disk: dict[tuple[int, int], str] = dict()
         self.page_failure_count: int = 0
         self.requests: list[tuple[int, int, str]] = list()
         pra.frame_quantity = self.frame_quantity
@@ -61,7 +63,8 @@ class Victoria:
         if pid in self.programs:
             raise RuntimeError("Check your pid's")
 
-        self.programs[pid] = Program(program_size=self.program_size, page_quantity=self.page_quantity, pid=pid, name=name, data=data)
+        self.programs[pid] = Program(program_size=self.program_size, page_quantity=self.page_quantity, pid=pid,
+                                     name=name, data=data)
         self.program_count += 1
 
     def find_program(self, pid) -> Program:
@@ -100,13 +103,13 @@ class Victoria:
         return (pid, vpn) in self.disk
 
     def handle_page_hit(
-        self, pag_tab: PageTable, pid: int, vpn: int, mode: str, frame_usage: DataFrame
+            self, pag_tab: PageTable, pid: int, vpn: int, mode: str, frame_usage: DataFrame
     ):
         frame = pag_tab.table.loc[vpn, "frame"]
         fpn = frame_usage.loc[frame]
         fpn = frame_usage.loc[
             (frame_usage["pid"] == pid) & (frame_usage["vpn"] == vpn)
-        ].index.tolist()
+            ].index.tolist()
         if mode == "w":
             pag_tab.update_page(vpn)
             frame_usage.loc[fpn[0], "M"] = 1
@@ -120,7 +123,12 @@ class Victoria:
 
         if fpn == -1:
             self.page_failure_count += 1
-            fpn = self.pra.execute_algorithm(self.ram_manager.frame_usage)
+            fpn = -1
+            if isinstance(self.pra, Optimal):
+                fpn = self.pra.execute_algorithm(frame_usage=self.ram_manager.frame_usage,
+                                                 next_requests=self.requests[self.current_request + 1:])
+            else:
+                fpn = self.pra.execute_algorithm(self.ram_manager.frame_usage)
             program_target = self.ram_manager.find_vpn(fpn)
             pid_target, vpn_target = program_target
             program_target = self.find_program(pid=pid_target)
@@ -209,6 +217,7 @@ class Victoria:
                 total_accesses=self.memory_access_count,
                 busy_frames=self.ram_manager.get_busy_frames_count(),
             )
+            self.current_request += 1
         self.metrics.print_step_by_step()
 
     def execute_next_request(self):
@@ -229,7 +238,6 @@ class Victoria:
             program.reset_page_table()
 
         self.next_reset_time = RESET_R_INTERVAL
-
 
     def reset_execution(self):
         self.reset()

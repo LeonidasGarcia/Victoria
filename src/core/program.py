@@ -1,6 +1,7 @@
 import random
 from src.core.page_table import PageTable
 
+
 class Program:
     def __init__(self, pid: int, program_size: int, page_quantity: int, name: str = "generic program", data: str = "d"):
         self.program_size = program_size
@@ -14,7 +15,7 @@ class Program:
         self.page_table.reset()
 
     def generate_memory_request(
-        self, vpn: int = -1, mode: str = "r"
+            self, vpn: int = -1, mode: str = "r"
     ) -> tuple[int, int, str]:
         if vpn < 0:
             return (

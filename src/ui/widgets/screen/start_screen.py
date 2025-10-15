@@ -43,9 +43,9 @@ class StartScreen(Frame):
             self.right_frame,
             victoria=Victoria(ram=102400, program_size=204800, page_size=4096, pra=Lru(), metrics=Metrics()),
             program_count=5,
-            program_colors=gen_hex_colors_list(quantity=5)
+            program_colors=gen_hex_colors_list(quantity=5),
+            bg=victoria_background
         )
         sample.grid(row=0, column=0, sticky="nsew")
 
         self.sample = sample
-

@@ -1,17 +1,18 @@
 from pandas import DataFrame
 from numpy import ndarray
 
+
 class Metrics:
     def __init__(
-        self,
-        frame_quantity: int = 0,
-        active: bool = True,
-        ram: bool = True,
-        page_fault_count: bool = True,
-        page_fault_rate: bool = True,
-        average_time_access: bool = True,
-        memory_usage: bool = True,
-        logic_time: bool = True,
+            self,
+            frame_quantity: int = 0,
+            active: bool = True,
+            ram: bool = True,
+            page_fault_count: bool = True,
+            page_fault_rate: bool = True,
+            average_time_access: bool = True,
+            memory_usage: bool = True,
+            logic_time: bool = True,
     ):
         self.frame_quantity = frame_quantity
         self.active = active
@@ -25,55 +26,53 @@ class Metrics:
         self.ram_history: list[tuple] = []
 
     def add_ram_log(
-        self,
-        frame_usage: DataFrame,
-        ram: ndarray,
-        total_faults: int,
-        clock: int,
-        total_accesses: int,
-        busy_frames: int,
+            self,
+            frame_usage: DataFrame,
+            ram: ndarray,
+            total_faults: int,
+            clock: int,
+            total_accesses: int,
+            busy_frames: int,
     ):
         self.ram_history.append(
             {
                 "frame": frame_usage.to_string(),
                 "ram": str(ram),
                 "logic_time": "Logic time: " + str(clock),
-                "page_fault_count": "Page failure count: " + str(total_faults),
-                "page_fault_rate": "Page failure rate: "
-                + str(round((total_faults / total_accesses) * 100, 2))
-                + "%",
-                "average_time_access": "Average time access in memory: "
-                + str(round(clock / total_accesses, 2)),
+                "page_fault_count": "PF count: " + str(total_faults),
+                "page_fault_rate": "PF rate: "
+                                   + str(round((total_faults / total_accesses) * 100, 2))
+                                   + "%",
+                "average_time_access": "AVG time access to memory: "
+                                       + str(round(clock / total_accesses, 2)),
                 "memory_usage": "Memory usage: "
-                + str(round((busy_frames / self.frame_quantity) * 100, 2))
-                + "%",
+                                + str(round((busy_frames / self.frame_quantity) * 100, 2))
+                                + "%",
             }
         )
 
     def get_current_ram_log(
-        self,
-        total_faults: int,
-        clock: int,
-        total_accesses: int,
-        busy_frames: int,
+            self,
+            total_faults: int,
+            clock: int,
+            total_accesses: int,
+            busy_frames: int,
     ):
         if total_accesses == 0:
             total_accesses = 1
 
         return {
             "logic_time": "Logic time: " + str(clock),
-            "page_fault_count": "Page failure count: " + str(total_faults),
-            "page_fault_rate": "Page failure rate: "
-                + str(round((total_faults / total_accesses) * 100, 2))
-                + "%",
-           "average_time_access": "Average time access in memory: "
-                + str(round(clock / total_accesses, 2)),
-           "memory_usage": "Memory usage: "
-                + str(round((busy_frames / self.frame_quantity) * 100, 2))
-                + "%",
+            "page_fault_count": "PF count: " + str(total_faults),
+            "page_fault_rate": "PF rate: "
+                               + str(round((total_faults / total_accesses) * 100, 2))
+                               + "%",
+            "average_time_access": "AVG time access to memory: "
+                                   + str(round(clock / total_accesses, 2)),
+            "memory_usage": "Memory usage: "
+                            + str(round((busy_frames / self.frame_quantity) * 100, 2))
+                            + "%",
         }
-
-
 
     def print_log(self, log: dict):
         print(log["frame"])

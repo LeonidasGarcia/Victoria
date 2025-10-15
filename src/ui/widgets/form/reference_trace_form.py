@@ -5,6 +5,7 @@ from typing import Tuple, List, Optional
 from pydantic import ValidationError
 
 from src.data.preset import Preset
+from src.ui.colors import victoria_background
 from src.ui.widgets.form.memory_form import MemoryForm
 from src.ui.widgets.form.models.memory_model import MemoryModel
 from src.ui.widgets.form.models.program_model import ProgramModel
@@ -22,6 +23,7 @@ class ReferenceTraceForm(Frame):
 
         super().__init__(master, **kwargs)
         self.grid_propagate(False)
+        self.configure(bg=victoria_background)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -34,31 +36,38 @@ class ReferenceTraceForm(Frame):
         self.grid_rowconfigure(4, weight=1)
         self.grid_rowconfigure(5, weight=1)
 
-        tk.Label(self, text="Rastreo de referencias").grid(row=0, column=0, columnspan=2, sticky=tk.W)
+        tk.Label(self, text="Rastreo de referencias", bg=victoria_background, fg="white").grid(row=0, column=0,
+                                                                                               columnspan=2,
+                                                                                               sticky=tk.W)
 
-        tk.Label(self, text="PID").grid(row=1, column=0, sticky=tk.W)
-        self.pid_input = tk.Entry(self)
+        tk.Label(self, text="PID", bg=victoria_background, fg="white").grid(row=1, column=0, sticky=tk.W)
+        self.pid_input = tk.Entry(self, bg=victoria_background, fg="white")
         self.pid_input.grid(row=1, column=1)
 
-        tk.Label(self, text="Número de página").grid(row=2, column=0, sticky=tk.W)
-        self.num_page_input = tk.Entry(self)
+        tk.Label(self, text="Número de página", bg=victoria_background, fg="white").grid(row=2, column=0, sticky=tk.W)
+        self.num_page_input = tk.Entry(self, bg=victoria_background, fg="white")
         self.num_page_input.grid(row=2, column=1)
 
-        tk.Label(self, text="Modo").grid(row=3, column=0, sticky=tk.W)
+        tk.Label(self, text="Modo", bg=victoria_background, fg="white").grid(row=3, column=0, sticky=tk.W)
         self.mode_input = ttk.Combobox(self, textvariable=self.selected_mode, state="readonly")
         self.mode_input.configure(values=["r", "w"])
         self.selected_mode.set("r")
         self.mode_input.grid(row=3, column=1)
 
-        self.register_button = tk.Button(self, text="Registrar", command=self.register_reference_trace)
+        self.register_button = tk.Button(self, text="Registrar", bg=victoria_background, fg="white",
+                                         command=self.register_reference_trace)
         self.register_button.grid(row=4, column=0, columnspan=2)
 
         self.reference_trace_table = ttk.Treeview(self, columns=("PID", "Página", "Modo"), show="headings")
         self.reference_trace_table_setup()
-        self.reference_trace_table.grid(row=1, rowspan=4, column=2, columnspan=2, sticky=tk.NSEW)
+        self.reference_trace_table.grid(row=1, rowspan=4, column=3, columnspan=2, sticky=tk.NSEW)
 
-        self.delete_reference_trace_button = tk.Button(self, text="Eliminar", state="disabled", command=self.on_click_delete_reference_trace_button)
-        self.delete_reference_trace_button.grid(row=5, column=3, sticky=tk.NSEW)
+        tk.Label(self, bg=victoria_background).grid(row=0, column=2, rowspan=5, sticky=tk.NSEW, padx=5, pady=5)
+
+        self.delete_reference_trace_button = tk.Button(self, text="Eliminar", bg=victoria_background, fg="white",
+                                                       state="disabled",
+                                                       command=self.on_click_delete_reference_trace_button)
+        self.delete_reference_trace_button.grid(row=5, column=4)
 
     def reference_trace_table_setup(self):
         self.reference_trace_table.heading("PID", text="PID")
@@ -94,6 +103,9 @@ class ReferenceTraceForm(Frame):
             self.master.disable_entries()
 
     def clear_entries(self):
+        self.pid_input.delete(0, tk.END)
+        self.num_page_input.delete(0, tk.END)
+        self.selected_mode.set("r")
         self.free_tree()
 
     def get_current_entries(self) -> tuple[list[ReferenceTraceModel], Optional[str]]:
@@ -162,7 +174,8 @@ class ReferenceTraceForm(Frame):
         self.reference_trace_table.delete(*tree_children)
         self.reference_trace_models = {}
 
-    def set_entries(self, memory_form_model: MemoryModel, program_form_model: ProgramModel, reference_trace: list[tuple[int, int, int, str]]):
+    def set_entries(self, memory_form_model: MemoryModel, program_form_model: ProgramModel,
+                    reference_trace: list[tuple[int, int, int, str]]):
         self.free_tree()
 
         program_count = program_form_model.program_count
