@@ -45,26 +45,30 @@ class VictoriaCell(Frame):
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=0)
-        self.grid_rowconfigure(2, weight=8)
-        self.grid_rowconfigure(3, weight=0)
-        self.grid_rowconfigure(4, weight=6)
+        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(2, weight=0)
+        self.grid_rowconfigure(3, weight=8)
+        self.grid_rowconfigure(4, weight=0)
+        self.grid_rowconfigure(5, weight=6)
 
-        self.top_frame = tk.Frame(self, bg="red")
+        tk.Label(self, bg=victoria_background, fg="white", text=type(self.victoria.pra).__name__).grid(row=0, column=0,
+                                                                                                       sticky="nsw")
+
+        self.top_frame = tk.Frame(self, bg=victoria_background)
         self.top_frame_setup()
-        self.top_frame.grid(row=0, column=0, sticky="nsew")
+        self.top_frame.grid(row=1, column=0, sticky="nsew")
 
-        tk.Frame(self, bg=victoria_background).grid(row=1, column=0, sticky="nsew", padx=5, pady=5)
+        tk.Frame(self, bg=victoria_background).grid(row=2, column=0, sticky="nsew", padx=5, pady=5)
 
         self.mid_frame = tk.Frame(self, bg=victoria_background)
         self.mid_frame_setup()
-        self.mid_frame.grid(row=2, column=0, sticky="nsew")
+        self.mid_frame.grid(row=3, column=0, sticky="nsew")
 
-        tk.Frame(self, bg=victoria_background).grid(row=3, column=0, sticky="nsew", padx=5, pady=5)
+        tk.Frame(self, bg=victoria_background).grid(row=4, column=0, sticky="nsew", padx=5, pady=5)
 
         self.bottom_frame = tk.Frame(self, bg=victoria_background)
         self.bottom_frame_setup()
-        self.bottom_frame.grid(row=4, column=0, sticky="nsew", padx=5, pady=5)
+        self.bottom_frame.grid(row=5, column=0, sticky="nsew", padx=5, pady=5)
 
         self.bind("<Configure>", self._check_size)
         self.execute_current_request()
@@ -100,6 +104,9 @@ class VictoriaCell(Frame):
 
         if self.victoria.execution_should_continue():
             self.recursive_id = self.after(1000, self.execute_current_request)
+        else:
+            self.current_request_label.configure(
+                text="Ejecución finalizada :)")
 
     def stop_current_request(self):
         if self.recursive_id:
@@ -307,7 +314,6 @@ class VictoriaCell(Frame):
                 self.is_wide_layout = False
 
     def _apply_wide_layout(self):
-        print("_apply_wide_layout")
         bottom_frame = self.bottom_frame
 
         bottom_frame.grid_columnconfigure(0, weight=1)
@@ -325,7 +331,6 @@ class VictoriaCell(Frame):
         programs_frame.grid(row=0, column=1, sticky="ew")
 
     def _apply_compact_layout(self):
-        print("_apply_compact_layout")
         bottom_frame = self.bottom_frame
 
         bottom_frame.grid_columnconfigure(0, weight=1)

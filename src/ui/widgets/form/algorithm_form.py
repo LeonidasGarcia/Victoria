@@ -35,22 +35,27 @@ class AlgorithmForm(Frame):
                                                                                                 sticky=tk.W)
 
         self.LRU_check_button = tk.Checkbutton(self, text="LRU", bg=victoria_background, fg="white",
+                                               selectcolor=victoria_background,
                                                variable=self.is_LRU_active,
                                                command=self.check_at_least_one)
         self.LRU_check_button.grid(row=1, column=0, sticky=tk.NSEW)
         self.FIFO_check_button = tk.Checkbutton(self, text="FIFO", bg=victoria_background, fg="white",
+                                                selectcolor=victoria_background,
                                                 variable=self.is_FIFO_active,
                                                 command=self.check_at_least_one)
         self.FIFO_check_button.grid(row=1, column=1, sticky=tk.NSEW)
         self.NRU_check_button = tk.Checkbutton(self, text="NRU", bg=victoria_background, fg="white",
+                                               selectcolor=victoria_background,
                                                variable=self.is_NRU_active,
                                                command=self.check_at_least_one)
         self.NRU_check_button.grid(row=1, column=2, sticky=tk.NSEW)
         self.CLK_check_button = tk.Checkbutton(self, text="CLK", bg=victoria_background, fg="white",
+                                               selectcolor=victoria_background,
                                                variable=self.is_CLK_active,
                                                command=self.check_at_least_one)
         self.CLK_check_button.grid(row=2, column=0, sticky=tk.NSEW)
         self.OPTIMAL_check_button = tk.Checkbutton(self, text="OPTIMAL", bg=victoria_background, fg="white",
+                                                   selectcolor=victoria_background,
                                                    variable=self.is_OPTIMAL_active,
                                                    command=self.check_at_least_one)
         self.OPTIMAL_check_button.grid(row=2, column=1, sticky=tk.NSEW)

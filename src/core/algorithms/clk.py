@@ -23,7 +23,6 @@ class Clk(PageReplacementAlgorithm):
                         self.reset()
                     else:
                         self.resume = fpn + 1
-                        print("fpn devuelto = ", fpn)
                     return fpn
             self.resume = 0
 

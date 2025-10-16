@@ -9,8 +9,8 @@ from src.core.algorithms.page_replacement_algorithm import PageReplacementAlgori
 class Optimal(PageReplacementAlgorithm):
     def execute_algorithm(self, frame_usage: DataFrame,
                           next_requests: Optional[list[tuple[int, int, str]]] = None) -> int:
-        print("ejecutando optimal")
-        current_active_frame = frame_usage[["FPN", "pid", "vpn"]].values.tolist()
+        formatted_df = frame_usage.reset_index()
+        current_active_frame = formatted_df[["FPN", "pid", "vpn"]].values.tolist()
 
         if len(next_requests) == 0:
             return random.randint(0, len(current_active_frame) - 1)

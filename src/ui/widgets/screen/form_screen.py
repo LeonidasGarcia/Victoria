@@ -1,3 +1,4 @@
+import random
 import tkinter as tk
 from tkinter import Frame, ttk, simpledialog, messagebox
 from typing import Optional, List
@@ -60,7 +61,7 @@ class FormScreen(Frame):
 
         self.start_frame.grid_columnconfigure(0, weight=1)
         self.start_frame.grid_rowconfigure(0, weight=1)
-        self.start_frame.grid_rowconfigure(1, weight=0)
+        self.start_frame.grid_rowconfigure(1, weight=1)
         self.start_frame.grid_rowconfigure(2, weight=1)
 
         self.start_frame.grid(row=0, rowspan=4, column=4, sticky=tk.NSEW)
@@ -70,16 +71,63 @@ class FormScreen(Frame):
                                      command=self.save_preset)
         self.save_button.grid(row=0, column=0, sticky="s")
 
-        tk.Frame(self.start_frame, bg=victoria_background).grid(row=1, column=0, sticky="nsew", padx=10,
-                                                                pady=10)
-
         self.start_button = tk.Button(self.start_frame, bg=victoria_background, fg="white", text="Iniciar",
                                       state=tk.DISABLED, command=self.load_simulation)
-        self.start_button.grid(row=2, column=0, sticky="n")
+        self.start_button.grid(row=1, column=0)
+
+        self.random_button = tk.Button(self.start_frame, bg=victoria_background, fg="white", text="Accesos aleatorios",
+                                       command=self.load_random)
+        self.random_button.grid(row=2, column=0, sticky="n")
 
         self.reload_presets()
 
         self.presets_combobox.bind("<<ComboboxSelected>>", lambda event: self.on_selection_change())
+
+    def load_random(self):
+        random_page_size = random.randint(2, 10)
+        random_program_size = random_page_size * random.randint(2, 90)
+        random_ram = random_page_size * random.randint(2, 10)
+
+        random_program_count = random.randint(1, 50)
+
+        victoria_sample = Victoria(ram=random_ram, program_size=random_program_size, page_size=random_page_size,
+                                   pra=Lru(), metrics=Metrics())
+
+        for i in range(random_program_count):
+            victoria_sample.load_program(pid=i, name=f"Program {i + 1}", data=str(i))
+
+        request_count = random.randint(1, 100)
+        victoria_sample.generate_random_requests(quantity=request_count)
+
+        random_reference_trace: list[tuple[int, int, int, str]] = []
+        for pid, page, mode in victoria_sample.requests:
+            random_reference_trace.append((-1, pid, page, mode))
+
+        self.memory_form.set_entries(
+            ram=random_ram,
+            program_size=random_program_size,
+            page_size=random_page_size,
+        )
+
+        self.program_form.set_entries(
+            program_count=random_program_count
+        )
+
+        memory_form_model, error = self.memory_form.get_current_entries()
+
+        if error:
+            raise ValueError(error)
+
+        program_form_model, error = self.program_form.get_current_entries()
+
+        if error:
+            raise ValueError(error)
+
+        self.reference_trace_form.set_entries(
+            memory_form_model=memory_form_model,
+            program_form_model=program_form_model,
+            reference_trace=random_reference_trace,
+        )
 
     def save_preset(self):
         if self.selected_preset_input.get() != "Personalizado":

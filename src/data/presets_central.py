@@ -67,56 +67,267 @@ class PresetsCentral:
             return presets, presets_reference_trace
 
     def initial_load(self):
-        preset_1 = Preset(
+        temporal = Preset(
             id=-1,
-            name="Test Básico",
-            ram=512,
+            name="Localidad Temporal",
+            ram=192,
             program_size=128,
             page_size=64,
             program_count=3,
             reference_trace=[
-                # (ID=-1, PID < 3, Page < 2, Mode in ["r", "w"])
+                (-1, 0, 0, "r"),
+                (-1, 2, 0, "r"),
+                (-1, 2, 1, "r"),
+                (-1, 2, 1, "r"),
+                (-1, 1, 1, "w"),
+                (-1, 1, 1, "w"),
+                (-1, 0, 1, "w"),
+                (-1, 0, 1, "w"),
+                (-1, 1, 0, "w"),
+                (-1, 1, 0, "w"),
+                (-1, 2, 1, "r"),
+                (-1, 0, 1, "w"),
+                (-1, 0, 1, "r"),
+                (-1, 0, 1, "w"),
+                (-1, 0, 1, "w"),
+                (-1, 0, 1, "w"),
+                (-1, 0, 1, "w"),
+                (-1, 1, 1, "w"),
                 (-1, 0, 0, "r"),
                 (-1, 1, 1, "w"),
                 (-1, 2, 0, "r"),
+                (-1, 2, 0, "r"),
+                (-1, 2, 0, "r"),
+                (-1, 2, 0, "r"),
+                (-1, 2, 0, "r"),
+                (-1, 2, 0, "r"),
+                (-1, 2, 0, "r"),
+                (-1, 2, 0, "r"),
+                (-1, 1, 1, "w"),
+                (-1, 1, 1, "w"),
+                (-1, 1, 1, "w"),
+                (-1, 1, 1, "w"),
+                (-1, 0, 0, "r"),
+                (-1, 0, 0, "r"),
+                (-1, 0, 0, "w"),
+                (-1, 0, 0, "w"),
+                (-1, 0, 0, "w"),
+                (-1, 0, 0, "w"),
+                (-1, 0, 0, "w"),
+                (-1, 0, 0, "w"),
+                (-1, 0, 0, "w"),
+                (-1, 1, 0, "w"),
+                (-1, 1, 0, "w"),
+                (-1, 2, 1, "r"),
+                (-1, 2, 1, "r"),
             ]
         )
 
-        preset_2 = Preset(
+        spacial = Preset(
             id=-1,
-            name="Config Desarrollo",
+            name="Localidad Espacial",
             ram=2000,  # Corregido para aceptar page_size=50 (2000/50=40)
             program_size=500,
             page_size=50,  # Divisor de 2000 y 500
             program_count=8,
             reference_trace=[
-                # (ID=-1, PID < 8, Page < 10, Mode in ["r", "w"])
                 (-1, 7, 9, "w"),
-                (-1, 3, 0, "r"),
-                (-1, 0, 5, "w"),
+                (-1, 7, 8, "w"),
+                (-1, 7, 7, "w"),
+                (-1, 4, 2, "w"),
                 (-1, 4, 1, "r"),
+                (-1, 7, 8, "r"),
+                (-1, 5, 6, "w"),
+                (-1, 5, 6, "r"),
+                (-1, 7, 7, "w"),
+                (-1, 7, 7, "r"),
+                (-1, 4, 3, "r"),
+                (-1, 4, 3, "r"),
+                (-1, 4, 3, "r"),
+                (-1, 4, 1, "r"),
+                (-1, 2, 0, "r"),
+                (-1, 2, 0, "r"),
+                (-1, 2, 2, "w"),
+                (-1, 5, 5, "r"),
+                (-1, 5, 4, "r"),
+                (-1, 5, 4, "w"),
+                (-1, 5, 4, "w"),
+                (-1, 2, 0, "r"),
+                (-1, 2, 1, "w"),
+                (-1, 2, 2, "w"),
             ]
         )
 
-        preset_3 = Preset(
+        big_memory = Preset(
             id=-1,
-            name="Producción Máxima",
-            ram=4096,
-            program_size=1024,
-            page_size=256,
-            program_count=15,
+            name="Memoria Grande",
+            ram=40960,
+            program_size=81920,
+            page_size=4096,
+            program_count=5,
             reference_trace=[
-                # (ID=-1, PID < 15, Page < 4, Mode in ["r", "w"])
-                (-1, 14, 3, "r"),
-                (-1, 5, 2, "w"),
-                (-1, 8, 0, "r"),
+                (-1, 2, 3, "r"),
+                (-1, 2, 5, "r"),
+                (-1, 3, 3, "r"),
+                (-1, 3, 4, "r"),
+                (-1, 2, 3, "r"),
+                (-1, 2, 4, "r"),
+                (-1, 3, 5, "r"),
+                (-1, 0, 7, "w"),
+                (-1, 0, 1, "r"),
+                (-1, 3, 3, "r"),
+                (-1, 3, 8, "r"),
+                (-1, 0, 3, "w"),
+                (-1, 0, 4, "r"),
+                (-1, 3, 7, "r"),
+                (-1, 0, 2, "w"),
+                (-1, 0, 2, "r"),
+                (-1, 0, 2, "w"),
+                (-1, 0, 2, "r"),
+                (-1, 0, 7, "w"),
+                (-1, 0, 4, "r"),
+                (-1, 4, 7, "w"),
+                (-1, 4, 8, "r"),
+                (-1, 2, 7, "r"),
+                (-1, 2, 8, "r"),
+                (-1, 4, 6, "w"),
+                (-1, 4, 7, "w"),
+                (-1, 0, 1, "r"),
+                (-1, 0, 3, "w"),
+                (-1, 4, 7, "w"),
+                (-1, 4, 8, "w"),
             ]
         )
 
-        self.save_preset(preset_1)
-        self.save_preset(preset_2)
-        self.save_preset(preset_3)
+        little_memory = Preset(
+            id=-1,
+            name="Memoria Pequeña",
+            ram=20480,
+            program_size=81920,
+            page_size=4096,
+            program_count=5,
+            reference_trace=[
+                (-1, 2, 3, "r"),
+                (-1, 2, 5, "r"),
+                (-1, 3, 3, "r"),
+                (-1, 3, 4, "r"),
+                (-1, 2, 3, "r"),
+                (-1, 2, 4, "r"),
+                (-1, 3, 5, "r"),
+                (-1, 0, 7, "w"),
+                (-1, 0, 1, "r"),
+                (-1, 3, 3, "r"),
+                (-1, 3, 8, "r"),
+                (-1, 0, 3, "w"),
+                (-1, 0, 4, "r"),
+                (-1, 3, 7, "r"),
+                (-1, 0, 2, "w"),
+                (-1, 0, 2, "r"),
+                (-1, 0, 2, "w"),
+                (-1, 0, 2, "r"),
+                (-1, 0, 7, "w"),
+                (-1, 0, 4, "r"),
+                (-1, 4, 7, "w"),
+                (-1, 4, 8, "r"),
+                (-1, 2, 7, "r"),
+                (-1, 2, 8, "r"),
+                (-1, 4, 6, "w"),
+                (-1, 4, 7, "w"),
+                (-1, 0, 1, "r"),
+                (-1, 0, 3, "w"),
+                (-1, 4, 7, "w"),
+                (-1, 4, 8, "w"),
+            ]
+        )
 
+        big_page_size = Preset(
+            id=-1,
+            name="Memoria Pequeña",
+            ram=20480,
+            program_size=81920,
+            page_size=4096,
+            program_count=5,
+            reference_trace=[
+                (-1, 2, 3, "r"),
+                (-1, 2, 5, "r"),
+                (-1, 3, 3, "r"),
+                (-1, 3, 4, "r"),
+                (-1, 2, 3, "r"),
+                (-1, 2, 4, "r"),
+                (-1, 3, 5, "r"),
+                (-1, 0, 7, "w"),
+                (-1, 0, 1, "r"),
+                (-1, 3, 3, "r"),
+                (-1, 3, 8, "r"),
+                (-1, 0, 3, "w"),
+                (-1, 0, 4, "r"),
+                (-1, 3, 7, "r"),
+                (-1, 0, 2, "w"),
+                (-1, 0, 2, "r"),
+                (-1, 0, 2, "w"),
+                (-1, 0, 2, "r"),
+                (-1, 0, 7, "w"),
+                (-1, 0, 4, "r"),
+                (-1, 4, 7, "w"),
+                (-1, 4, 8, "r"),
+                (-1, 2, 7, "r"),
+                (-1, 2, 8, "r"),
+                (-1, 4, 6, "w"),
+                (-1, 4, 7, "w"),
+                (-1, 0, 1, "r"),
+                (-1, 0, 3, "w"),
+                (-1, 4, 7, "w"),
+                (-1, 4, 8, "w"),
+            ]
+        )
+
+        little_page_size = Preset(
+            id=-1,
+            name="Memoria Pequeña",
+            ram=20480,
+            program_size=81920,
+            page_size=2048,
+            program_count=5,
+            reference_trace=[
+                (-1, 2, 3, "r"),
+                (-1, 2, 5, "r"),
+                (-1, 3, 3, "r"),
+                (-1, 3, 4, "r"),
+                (-1, 2, 3, "r"),
+                (-1, 2, 4, "r"),
+                (-1, 3, 5, "r"),
+                (-1, 0, 7, "w"),
+                (-1, 0, 1, "r"),
+                (-1, 3, 3, "r"),
+                (-1, 3, 8, "r"),
+                (-1, 0, 3, "w"),
+                (-1, 0, 4, "r"),
+                (-1, 3, 7, "r"),
+                (-1, 0, 2, "w"),
+                (-1, 0, 2, "r"),
+                (-1, 0, 2, "w"),
+                (-1, 0, 2, "r"),
+                (-1, 0, 7, "w"),
+                (-1, 0, 4, "r"),
+                (-1, 4, 7, "w"),
+                (-1, 4, 8, "r"),
+                (-1, 2, 7, "r"),
+                (-1, 2, 8, "r"),
+                (-1, 4, 6, "w"),
+                (-1, 4, 7, "w"),
+                (-1, 0, 1, "r"),
+                (-1, 0, 3, "w"),
+                (-1, 4, 7, "w"),
+                (-1, 4, 8, "w"),
+            ]
+        )
+
+        self.save_preset(temporal)
+        self.save_preset(spacial)
+        self.save_preset(big_memory)
+        self.save_preset(little_memory)
+        self.save_preset(big_page_size)
+        self.save_preset(little_page_size)
 
     def get_presets(self) -> List[Preset]:
         presets = []
@@ -133,7 +344,7 @@ class PresetsCentral:
                         reference_trace_row.pid,
                         reference_trace_row.page,
                         reference_trace_row.mode
-                     )
+                    )
                 )
 
             presets.append(
@@ -149,7 +360,6 @@ class PresetsCentral:
             )
 
         return presets
-
 
     def get_preset(self, preset_id: Optional[int] = None, preset_name: Optional[str] = None) -> Optional[Preset]:
         preset = None
@@ -174,7 +384,7 @@ class PresetsCentral:
 
         preset_reference_trace = self.presets_reference_trace[
             self.presets_reference_trace["preset_id"] == preset_id
-        ]
+            ]
 
         reference_trace = []
 
@@ -266,7 +476,6 @@ class PresetsCentral:
         preset.id = old_preset_id
         return self.get_preset(fresh_preset_id), None
 
-
     def delete_preset(self, preset_id: int):
         try:
             self.presets.drop(labels=preset_id, inplace=True)
@@ -281,5 +490,6 @@ class PresetsCentral:
 
         self.presets.to_csv(self.root_file, index=True)
         self.presets_reference_trace.to_csv(self.trace_file, index=True)
+
 
 presets_central = PresetsCentral(root_file="../data/presets.csv", trace_file="../data/presets_reference_trace.csv")

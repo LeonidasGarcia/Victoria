@@ -27,7 +27,7 @@ class ConfigPresets(Toplevel):
         self.grid_rowconfigure(2, weight=5)
         self.grid_rowconfigure(3, weight=20)
 
-        self.controls_frame = tk.Frame(self, bg="red")
+        self.controls_frame = tk.Frame(self, bg=victoria_background)
 
         self.controls_frame.grid_columnconfigure(0, weight=1)
         self.controls_frame.grid_columnconfigure(1, weight=1)

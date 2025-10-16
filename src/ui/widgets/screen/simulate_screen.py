@@ -27,7 +27,7 @@ class SimulateScreen(Frame):
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=0)
 
-        self.cells_frame = tk.Frame(self, bg="red")
+        self.cells_frame = tk.Frame(self, bg=victoria_background)
         self.cells_frame_setup()
         self.cells_frame.grid(row=0, column=0, sticky="nsew")
 
