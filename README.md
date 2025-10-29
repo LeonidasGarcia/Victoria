@@ -1,4 +1,7 @@
 # Proyecto: Victoria - Simulador de Gestión de Memoria Virtual
+**Tecnologías usadas**: Python | Tkinter | Pandas | CSV Config Presets | Pillow
+
+**Entorno de desarrollo**: PyCharm + Code With Me (Colaboración en vivo)
 
 ## 1. Introducción al Proyecto
 
