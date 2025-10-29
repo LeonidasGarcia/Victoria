@@ -15,17 +15,17 @@ class ConfigPresets(Toplevel):
         self.selected_preset: Preset | None = None
 
         super().__init__(master, **kwargs)
-        self.configure(bg=victoria_background, padx=10, pady=10)
-        self.title("Presets")
-        self.geometry("550x600")
+        self.configure(bg=victoria_background, padx=20, pady=20)
+        self.title("Configuración de Presets")
+        self.geometry("550x890")
         self.transient(master)
         self.grab_set()
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=5)
         self.grid_rowconfigure(2, weight=5)
-        self.grid_rowconfigure(3, weight=20)
+        self.grid_rowconfigure(4, weight=5)
+        self.grid_rowconfigure(6, weight=20)
 
         self.controls_frame = tk.Frame(self, bg=victoria_background)
 
@@ -45,23 +45,36 @@ class ConfigPresets(Toplevel):
                                      command=self.update_preset)
         self.save_button.grid(row=0, column=1, sticky="nsew")
 
-        self.reset_button = tk.Button(self.controls_frame, text="Reset", bg=victoria_background, fg="white",
+        self.reset_button = tk.Button(self.controls_frame, text="Reiniciar", bg=victoria_background, fg="white",
                                       command=lambda: self.set_fields())
         self.reset_button.grid(row=0, column=2, sticky="nsew")
 
-        self.delete_button = tk.Button(self.controls_frame, text="Delete", bg=victoria_background, fg="white",
+        self.delete_button = tk.Button(self.controls_frame, text="Borrar", bg=victoria_background, fg="white",
                                        command=self.delete_preset)
         self.delete_button.grid(row=0, column=3, sticky="nsew")
 
+        tk.Frame(self, bg=victoria_background).grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
+
         self.memory_form = MemoryForm(self, bg=victoria_background)
-        self.memory_form.grid(row=1, column=0, sticky=tk.NSEW)
+        self.memory_form.grid(row=2, column=0, sticky=tk.NSEW)
+
+        tk.Frame(self, bg=victoria_background).grid(row=3, column=0, sticky="nsew", padx=10, pady=10)
 
         self.program_form = ProgramForm(self)
-        self.program_form.grid(row=2, column=0, sticky=tk.NSEW)
+        self.program_form.grid(row=4, column=0, sticky=tk.NSEW)
 
-        self.reference_trace_form = ReferenceTraceForm(self, memory_form=self.memory_form,
+        tk.Frame(self, bg=victoria_background).grid(row=5, column=0, sticky="nsew", padx=10, pady=10)
+
+        bottom_frame = tk.Frame(self, bg=victoria_background)
+
+        bottom_frame.grid_columnconfigure(0, weight=1)
+        bottom_frame.grid_rowconfigure(0, weight=1)
+
+        bottom_frame.grid(row=6, column=0, sticky="nsew")
+
+        self.reference_trace_form = ReferenceTraceForm(bottom_frame, memory_form=self.memory_form,
                                                        program_form=self.program_form)
-        self.reference_trace_form.grid(row=3, column=0, sticky=tk.NSEW)
+        self.reference_trace_form.grid(row=0, column=0, sticky=tk.NSEW)
 
         self.reload_presets()
         self.set_fields()

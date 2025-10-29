@@ -27,44 +27,71 @@ class FormScreen(Frame):
 
         super().__init__(master, **kwargs)
         self.grid_propagate(False)
-        self.configure(bg=victoria_background, padx=30, pady=30)
+        self.configure(bg=victoria_background, borderwidth=5, relief="sunken", padx=30, pady=15)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(2, weight=3)
         self.grid_columnconfigure(4, weight=1)
-        self.grid_rowconfigure(0, weight=0)
-        self.grid_rowconfigure(1, weight=1)
-        self.grid_rowconfigure(2, weight=2)
-        self.grid_rowconfigure(3, weight=2)
+        self.grid_rowconfigure(0, weight=1)
 
-        self.presets_combobox = ttk.Combobox(self, textvariable=self.selected_preset_input, state="readonly")
-        self.presets_combobox.grid(row=0, column=0, sticky="w")
+        left_frame = tk.Frame(self, bg=victoria_background)
 
-        self.memory_form = MemoryForm(self, bg=victoria_background)
-        self.memory_form.grid(row=1, column=0, rowspan=2, sticky=tk.NSEW)
+        left_frame.grid_columnconfigure(0, weight=1)
+        left_frame.grid_rowconfigure(0, weight=0)
+        left_frame.grid_rowconfigure(2, weight=1)
+        left_frame.grid_rowconfigure(4, weight=1)
 
-        self.algorithm_form = AlgorithmForm(self)
-        self.algorithm_form.grid(row=3, column=0, sticky=tk.NSEW)
+        left_frame.grid(row=0, column=0, sticky="nsew")
 
-        tk.Frame(self, bg=victoria_background).grid(row=0, column=1, rowspan=4, sticky=tk.NSEW, padx=20, pady=20)
+        self.presets_combobox = ttk.Combobox(left_frame, textvariable=self.selected_preset_input, state="readonly")
+        self.presets_combobox.grid(row=0, column=0, sticky="w", padx=15, pady=30)
 
-        self.program_form = ProgramForm(self)
-        self.program_form.grid(row=0, column=2, rowspan=2, sticky=tk.NSEW)
+        tk.Frame(left_frame, bg=victoria_background).grid(row=1, column=0, sticky=tk.NSEW, padx=10, pady=10)
 
-        self.reference_trace_form = ReferenceTraceForm(self, memory_form=self.memory_form,
+        self.memory_form = MemoryForm(left_frame, bg=victoria_background)
+        self.memory_form.grid(row=2, column=0, sticky=tk.NSEW)
+
+        tk.Frame(left_frame, bg=victoria_background).grid(row=3, column=0, sticky=tk.NSEW, padx=10, pady=10)
+
+        self.algorithm_form = AlgorithmForm(left_frame, bg=victoria_background)
+        self.algorithm_form.grid(row=4, column=0, sticky=tk.NSEW)
+
+        tk.Frame(self, bg=victoria_background).grid(row=0, column=1, sticky=tk.NSEW, padx=10, pady=10)
+
+        mid_frame = tk.Frame(self, bg=victoria_background)
+
+        mid_frame.grid_columnconfigure(0, weight=1)
+        mid_frame.grid_rowconfigure(0, weight=1)
+        mid_frame.grid_rowconfigure(2, weight=5)
+
+        mid_frame.grid(row=0, column=2, sticky=tk.NSEW)
+
+        self.program_form = ProgramForm(mid_frame)
+        self.program_form.grid(row=0, column=0, sticky="nsew")
+
+        tk.Frame(mid_frame, bg=victoria_background).grid(row=1, column=0, sticky=tk.NSEW, padx=10, pady=10)
+
+        self.reference_trace_form = ReferenceTraceForm(mid_frame, memory_form=self.memory_form,
                                                        program_form=self.program_form)
-        self.reference_trace_form.grid(row=2, rowspan=2, column=2, sticky=tk.NSEW)
+        self.reference_trace_form.grid(row=2, column=0, sticky=tk.NSEW)
 
-        tk.Frame(self, bg=victoria_background).grid(row=0, column=3, rowspan=4, sticky=tk.NSEW, padx=20, pady=20)
+        tk.Frame(self, bg=victoria_background).grid(row=0, column=3, sticky=tk.NSEW, padx=10, pady=10)
 
-        self.start_frame = tk.Frame(self, bg=victoria_background)
+        right_frame = tk.Frame(self, bg=victoria_background)
+
+        right_frame.grid_columnconfigure(0, weight=1)
+        right_frame.grid_rowconfigure(0, weight=1)
+
+        right_frame.grid(row=0, column=4, sticky=tk.NSEW)
+
+        self.start_frame = tk.Frame(right_frame, bg=victoria_background)
 
         self.start_frame.grid_columnconfigure(0, weight=1)
         self.start_frame.grid_rowconfigure(0, weight=1)
         self.start_frame.grid_rowconfigure(1, weight=1)
         self.start_frame.grid_rowconfigure(2, weight=1)
 
-        self.start_frame.grid(row=0, rowspan=4, column=4, sticky=tk.NSEW)
+        self.start_frame.grid(row=0, column=0, sticky=tk.NSEW)
 
         self.save_button = tk.Button(self.start_frame, bg=victoria_background, fg="white", text="Guardar como preset",
                                      state="normal",

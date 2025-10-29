@@ -32,6 +32,7 @@ class Victoria:
         self.page_size = page_size
         self.page_quantity = program_size // page_size
         self.frame_quantity = ram // page_size
+
         self.ram_manager: RamManager = RamManager(frame_quantity=self.frame_quantity)
         self.programs: dict[int, Program] = dict()
         self.program_count: int = 0

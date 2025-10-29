@@ -27,7 +27,7 @@ class Clk(PageReplacementAlgorithm):
             self.resume = 0
 
         raise RuntimeError(
-            "Suerte infinita para quien encuentre este error, espero no te agarre en tu exposición asjfaskj"
+            "Este error no deberia ocurrir, proveniente del algoritmo CLK"
         )
 
     def reset(self):

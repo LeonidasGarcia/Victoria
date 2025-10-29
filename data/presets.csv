@@ -1,5 +1,7 @@
 id,name,ram,program_size,page_size,program_count
 1,Localidad Temporal,192,128,64,3
-2,Localidad Espacial,2000,500,50,8
+2,Localidad Espacial,500,2000,50,8
 3,Memoria Grande,40960,81920,4096,5
 4,Memoria Pequeña,20480,81920,4096,5
+5,Tamaño de página grande,24576,81920,8192,5
+6,Tamaño de página pequeño,24576,81920,4096,5

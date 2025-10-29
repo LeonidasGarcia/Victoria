@@ -43,7 +43,7 @@ class Metrics:
                 "page_fault_rate": "PF rate: "
                                    + str(round((total_faults / total_accesses) * 100, 2))
                                    + "%",
-                "average_time_access": "AVG time access to memory: "
+                "average_time_access": "AVG time access: "
                                        + str(round(clock / total_accesses, 2)),
                 "memory_usage": "Memory usage: "
                                 + str(round((busy_frames / self.frame_quantity) * 100, 2))
@@ -67,7 +67,7 @@ class Metrics:
             "page_fault_rate": "PF rate: "
                                + str(round((total_faults / total_accesses) * 100, 2))
                                + "%",
-            "average_time_access": "AVG time access to memory: "
+            "average_time_access": "AVG time access: "
                                    + str(round(clock / total_accesses, 2)),
             "memory_usage": "Memory usage: "
                             + str(round((busy_frames / self.frame_quantity) * 100, 2))

@@ -1,10 +1,11 @@
 import tkinter as tk
 from tkinter import Frame
+from tkinter.font import Font
 from typing import Optional
 
 from pydantic import ValidationError
 
-from src.ui.colors import victoria_background
+from src.ui.colors import victoria_background, victoria_green
 from src.ui.widgets.form.models.algoritm_model import AlgorithmModel
 
 
@@ -21,44 +22,58 @@ class AlgorithmForm(Frame):
 
         super().__init__(master, **kwargs)
         self.grid_propagate(False)
-        self.configure(bg=victoria_background)
+        self.configure(bg=victoria_background, borderwidth=5, relief="groove", padx=15, pady=15)
 
         self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(2, weight=1)
 
-        tk.Label(self, text="Algoritmos de reemplazo", bg=victoria_background, fg="white").grid(row=0, column=0,
-                                                                                                columnspan=2,
-                                                                                                sticky=tk.W)
+        tk.Label(self, text="Algoritmos de reemplazo", bg=victoria_background, fg=victoria_green,
+                 font=Font(family="Sans Serif", size=14, weight="bold")).grid(row=0, column=0,
+                                                                              columnspan=2,
+                                                                              sticky=tk.W)
 
-        self.LRU_check_button = tk.Checkbutton(self, text="LRU", bg=victoria_background, fg="white",
+        tk.Frame(self, bg=victoria_background).grid(row=1, column=0, sticky="nsew", padx=10, pady=5)
+
+        check_frame = tk.Frame(self, bg=victoria_background)
+
+        check_frame.grid_columnconfigure(0, weight=1)
+        check_frame.grid_columnconfigure(1, weight=1)
+        check_frame.grid_columnconfigure(2, weight=1)
+        check_frame.grid_rowconfigure(0, weight=1)
+        check_frame.grid_rowconfigure(1, weight=1)
+
+        check_frame.grid(row=2, column=0, sticky=tk.NSEW)
+
+        self.LRU_check_button = tk.Checkbutton(check_frame, text="LRU", bg=victoria_background, fg="white",
                                                selectcolor=victoria_background,
                                                variable=self.is_LRU_active,
                                                command=self.check_at_least_one)
-        self.LRU_check_button.grid(row=1, column=0, sticky=tk.NSEW)
-        self.FIFO_check_button = tk.Checkbutton(self, text="FIFO", bg=victoria_background, fg="white",
+        self.LRU_check_button.grid(row=0, column=0, sticky=tk.NSEW)
+
+        self.FIFO_check_button = tk.Checkbutton(check_frame, text="FIFO", bg=victoria_background, fg="white",
                                                 selectcolor=victoria_background,
                                                 variable=self.is_FIFO_active,
                                                 command=self.check_at_least_one)
-        self.FIFO_check_button.grid(row=1, column=1, sticky=tk.NSEW)
-        self.NRU_check_button = tk.Checkbutton(self, text="NRU", bg=victoria_background, fg="white",
+        self.FIFO_check_button.grid(row=0, column=1, sticky=tk.NSEW)
+
+        self.NRU_check_button = tk.Checkbutton(check_frame, text="NRU", bg=victoria_background, fg="white",
                                                selectcolor=victoria_background,
                                                variable=self.is_NRU_active,
                                                command=self.check_at_least_one)
-        self.NRU_check_button.grid(row=1, column=2, sticky=tk.NSEW)
-        self.CLK_check_button = tk.Checkbutton(self, text="CLK", bg=victoria_background, fg="white",
+        self.NRU_check_button.grid(row=0, column=2, sticky=tk.NSEW)
+
+        self.CLK_check_button = tk.Checkbutton(check_frame, text="CLK", bg=victoria_background, fg="white",
                                                selectcolor=victoria_background,
                                                variable=self.is_CLK_active,
                                                command=self.check_at_least_one)
-        self.CLK_check_button.grid(row=2, column=0, sticky=tk.NSEW)
-        self.OPTIMAL_check_button = tk.Checkbutton(self, text="OPTIMAL", bg=victoria_background, fg="white",
+        self.CLK_check_button.grid(row=1, column=0, sticky=tk.NSEW)
+
+        self.OPTIMAL_check_button = tk.Checkbutton(check_frame, text="OPTIMAL", bg=victoria_background, fg="white",
                                                    selectcolor=victoria_background,
                                                    variable=self.is_OPTIMAL_active,
                                                    command=self.check_at_least_one)
-        self.OPTIMAL_check_button.grid(row=2, column=1, sticky=tk.NSEW)
+        self.OPTIMAL_check_button.grid(row=1, column=1, sticky=tk.NSEW)
 
     def clear_entries(self):
         self.is_LRU_active.set(False)
@@ -99,7 +114,7 @@ class AlgorithmForm(Frame):
 
         if (is_LRU_active or is_FIFO_active or is_NRU_active or is_CLK_active or is_OPTIMAL_active):
             self.valid_state = True
-            self.master.check_if_can_start()
+            self.master.master.check_if_can_start()
         else:
-            self.master.disable_entries()
+            self.master.master.disable_entries()
             self.valid_state = False

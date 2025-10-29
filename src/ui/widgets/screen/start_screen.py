@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import Frame
+from tkinter.font import Font
 
 from src.core.algorithms.clk import Clk
 from src.core.algorithms.lru import Lru
@@ -20,7 +21,6 @@ class StartScreen(Frame):
 
         super().__init__(master, **kwargs)
         self.grid_propagate(False)
-
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=5)
         self.grid_rowconfigure(0, weight=1)
@@ -41,7 +41,8 @@ class StartScreen(Frame):
                  justify="left",
                  wraplength=600,
                  text=welcome_message,
-                 fg="white").grid(row=0, column=0, sticky="ns")
+                 fg="white",
+                 font=Font(weight="bold", size=9)).grid(row=0, column=0, sticky="ns")
 
     def right_frame_setup(self):
         self.right_frame.grid_columnconfigure(0, weight=1)

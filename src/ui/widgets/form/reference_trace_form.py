@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import Frame, ttk, messagebox
+from tkinter.font import Font
 from typing import Tuple, List, Optional
 
 from pydantic import ValidationError
 
 from src.data.preset import Preset
-from src.ui.colors import victoria_background
+from src.ui.colors import victoria_background, victoria_lightblue
 from src.ui.widgets.form.memory_form import MemoryForm
 from src.ui.widgets.form.models.memory_model import MemoryModel
 from src.ui.widgets.form.models.program_model import ProgramModel
@@ -23,7 +24,7 @@ class ReferenceTraceForm(Frame):
 
         super().__init__(master, **kwargs)
         self.grid_propagate(False)
-        self.configure(bg=victoria_background)
+        self.configure(bg=victoria_background, borderwidth=5, relief="groove", padx=15, pady=15)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
@@ -36,9 +37,10 @@ class ReferenceTraceForm(Frame):
         self.grid_rowconfigure(4, weight=1)
         self.grid_rowconfigure(5, weight=1)
 
-        tk.Label(self, text="Rastreo de referencias", bg=victoria_background, fg="white").grid(row=0, column=0,
-                                                                                               columnspan=2,
-                                                                                               sticky=tk.W)
+        tk.Label(self, text="Rastreo de referencias", bg=victoria_background, fg=victoria_lightblue,
+                 font=Font(family="Sans Serif", size=14, weight="bold")).grid(row=0, column=0,
+                                                                              columnspan=2,
+                                                                              sticky=tk.W)
 
         tk.Label(self, text="PID", bg=victoria_background, fg="white").grid(row=1, column=0, sticky=tk.W)
         self.pid_input = tk.Entry(self, bg=victoria_background, fg="white")
@@ -198,4 +200,4 @@ class ReferenceTraceForm(Frame):
             self.memory_form.memory_model = memory_form_model
             self.program_form.disable_entries()
             self.program_form.program_model = program_form_model
-            self.master.check_if_can_start()
+            self.master.master.check_if_can_start()

@@ -9,7 +9,7 @@ from src.core.algorithms.page_replacement_algorithm import PageReplacementAlgori
 class Optimal(PageReplacementAlgorithm):
     def execute_algorithm(self, frame_usage: DataFrame,
                           next_requests: Optional[list[tuple[int, int, str]]] = None) -> int:
-        formatted_df = frame_usage.reset_index()
+        formatted_df = frame_usage.reset_index(names=["FPN"])
         current_active_frame = formatted_df[["FPN", "pid", "vpn"]].values.tolist()
 
         if len(next_requests) == 0:

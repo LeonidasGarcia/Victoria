@@ -28,6 +28,6 @@ class Nru(PageReplacementAlgorithm):
                 break
 
         if fpn == -1:
-            raise RuntimeError("Fatal error on NRU: fpn is -1 wtf dude")
+            raise RuntimeError("Fatal error on NRU: fpn is -1")
 
         return fpn

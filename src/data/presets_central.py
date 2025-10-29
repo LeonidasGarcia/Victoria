@@ -123,12 +123,12 @@ class PresetsCentral:
             ]
         )
 
-        spacial = Preset(
+        spatial = Preset(
             id=-1,
             name="Localidad Espacial",
-            ram=2000,  # Corregido para aceptar page_size=50 (2000/50=40)
-            program_size=500,
-            page_size=50,  # Divisor de 2000 y 500
+            ram=500,
+            program_size=2000,
+            page_size=50,
             program_count=8,
             reference_trace=[
                 (-1, 7, 9, "w"),
@@ -155,6 +155,22 @@ class PresetsCentral:
                 (-1, 2, 0, "r"),
                 (-1, 2, 1, "w"),
                 (-1, 2, 2, "w"),
+                (-1, 7, 10, "w"),
+                (-1, 7, 6, "w"),
+                (-1, 7, 7, "w"),
+                (-1, 7, 11, "w"),
+                (-1, 2, 6, "w"),
+                (-1, 2, 2, "w"),
+                (-1, 2, 3, "w"),
+                (-1, 2, 4, "w"),
+                (-1, 2, 5, "w"),
+                (-1, 5, 5, "r"),
+                (-1, 5, 4, "r"),
+                (-1, 5, 5, "r"),
+                (-1, 5, 4, "r"),
+                (-1, 5, 5, "r"),
+                (-1, 5, 3, "r"),
+
             ]
         )
 
@@ -242,10 +258,10 @@ class PresetsCentral:
 
         big_page_size = Preset(
             id=-1,
-            name="Memoria Pequeña",
-            ram=20480,
+            name="Tamaño de página grande",
+            ram=24576,
             program_size=81920,
-            page_size=4096,
+            page_size=8192,
             program_count=5,
             reference_trace=[
                 (-1, 2, 3, "r"),
@@ -283,10 +299,10 @@ class PresetsCentral:
 
         little_page_size = Preset(
             id=-1,
-            name="Memoria Pequeña",
-            ram=20480,
+            name="Tamaño de página pequeño",
+            ram=24576,
             program_size=81920,
-            page_size=2048,
+            page_size=4096,
             program_count=5,
             reference_trace=[
                 (-1, 2, 3, "r"),
@@ -323,7 +339,7 @@ class PresetsCentral:
         )
 
         self.save_preset(temporal)
-        self.save_preset(spacial)
+        self.save_preset(spatial)
         self.save_preset(big_memory)
         self.save_preset(little_memory)
         self.save_preset(big_page_size)

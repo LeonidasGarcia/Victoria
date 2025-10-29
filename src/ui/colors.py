@@ -1,2 +1,5 @@
 victoria_background = "#282828"
-primary_text_color = "#ffffff"
+victoria_green = "#22be29"
+victoria_lightblue = "#549efe"
+victoria_pink = "#ff9d9d"
+victoria_orange = "#fe8154"

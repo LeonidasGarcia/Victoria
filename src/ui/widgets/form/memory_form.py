@@ -1,6 +1,7 @@
 import tkinter as tk
 from statistics import variance
 from tkinter import Frame
+from tkinter.font import Font
 from typing import Optional
 
 from pydantic import ValidationError
@@ -23,14 +24,16 @@ class MemoryForm(Frame):
 
         super().__init__(master, **kwargs)
         self.grid_propagate(False)
+        self.configure(borderwidth=5, relief="groove", padx=15, pady=15)
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=0)
         self.grid_rowconfigure(1, weight=2)
 
-        title_label = tk.Label(self, text="Memoria", bg=victoria_background, fg="white")
-        title_label.grid(row=0, column=0, columnspan=2, sticky="w")
+        title_label = tk.Label(self, text="Memoria", bg=victoria_background, fg="orange",
+                               font=Font(family="Sans Serif", size=14, weight="bold"))
+        title_label.grid(row=0, column=0, columnspan=2, sticky="nsw")
 
         inputs_frame = tk.Frame(self, bg=victoria_background)
 
