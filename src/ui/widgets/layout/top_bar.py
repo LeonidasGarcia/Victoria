@@ -73,7 +73,7 @@ class TopBar(Frame):
         spacer = tk.Frame(config_frame, bg=victoria_background)
         spacer.grid(row=0, column=0, sticky="nsew")
 
-        self.svg_icon = load_svg_icon("../assets/config_icon.svg", (46, 46))
+        self.svg_icon = load_svg_icon("assets/config_icon.svg", (46, 46))
 
         config_page_button = tk.Button(config_frame, width=100, image=self.svg_icon, bg=victoria_background,
                                        cursor="hand2",

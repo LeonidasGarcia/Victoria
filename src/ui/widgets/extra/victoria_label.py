@@ -14,6 +14,6 @@ class VictoriaLabel(Frame):
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        self.svg_icon = load_jpeg_icon("../assets/victoria_logo.png", (350, 50))
+        self.svg_icon = load_jpeg_icon("./assets/victoria_logo.png", (350, 50))
         self.icon_label = tk.Label(self, bg=victoria_background, width=100, image=self.svg_icon)
         self.icon_label.grid(row=0, column=0, sticky="nsew")

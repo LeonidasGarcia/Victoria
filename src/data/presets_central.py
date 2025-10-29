@@ -508,4 +508,4 @@ class PresetsCentral:
         self.presets_reference_trace.to_csv(self.trace_file, index=True)
 
 
-presets_central = PresetsCentral(root_file="../data/presets.csv", trace_file="../data/presets_reference_trace.csv")
+presets_central = PresetsCentral(root_file="data/presets.csv", trace_file="data/presets_reference_trace.csv")
