@@ -11,6 +11,7 @@ Pillow = "*"
 cairosvg = "*"
 lxml = "*"
 pydantic = "*"
+pyinstaller = "*"
 
 [dev-packages]
 
